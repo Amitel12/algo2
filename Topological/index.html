@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>סימולציית מיון טופולוגי</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; }
+        .node-circle { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="flex flex-col h-screen p-4 gap-4">
+
+    <div class="bg-white p-4 rounded-xl shadow-sm flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold">מיון טופולוגי (Topological Sort)</h1>
+            <p class="text-sm text-gray-500">האלגוריתם מוסיף צומת לראש הרשימה ברגע שזמן הסיום (f) שלו נקבע.</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="prevStep()" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">הקודם</button>
+            <span id="step-counter" class="font-mono self-center w-16 text-center">0/0</span>
+            <button onclick="nextStep()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">הבא</button>
+        </div>
+    </div>
+
+    <div class="flex flex-1 gap-4 min-h-0">
+        <div class="w-2/3 bg-white rounded-xl shadow-sm flex items-center justify-center p-4">
+            <svg id="graph-svg" viewBox="0 0 700 400" class="w-full h-full"></svg>
+        </div>
+        <div class="w-1/3 flex flex-col gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm flex-1 overflow-y-auto">
+                <h2 class="font-bold mb-2">סטטוס האלגוריתם:</h2>
+                <div id="status-message" class="text-blue-700 font-medium bg-blue-50 p-3 rounded-lg mb-4"></div>
+                <h2 class="font-bold mb-2">רשימת פלט (סדר טופולוגי):</h2>
+                <div id="topo-list" class="flex flex-wrap gap-2 text-lg font-mono items-center"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nodesData = [
+            { id: 'v1', x: 200, y: 100, label: 'V1' }, { id: 'v2', x: 350, y: 100, label: 'V2' },
+            { id: 'v3', x: 500, y: 100, label: 'V3' }, { id: 'v4', x: 100, y: 200, label: 'V4' },
+            { id: 'v5', x: 300, y: 200, label: 'V5' }, { id: 'v9', x: 450, y: 200, label: 'V9' },
+            { id: 'v6', x: 600, y: 150, label: 'V6' }, { id: 'v7', x: 200, y: 300, label: 'V7' },
+            { id: 'v8', x: 350, y: 300, label: 'V8' }, { id: 'v10', x: 500, y: 300, label: 'V10' }
+        ];
+        const edges = [{u:'v1',v:'v2'},{u:'v2',v:'v3'},{u:'v2',v:'v5'},{u:'v3',v:'v9'},{u:'v6',v:'v3'},{u:'v6',v:'v9'},{u:'v4',v:'v1'},{u:'v4',v:'v7'},{u:'v7',v:'v5'},{u:'v7',v:'v8'},{u:'v5',v:'v9'},{u:'v5',v:'v8'},{u:'v8',v:'v9'},{u:'v10',v:'v8'}];
+        const adj = { 'v1':['v2'], 'v2':['v3','v5'], 'v3':['v9'], 'v4':['v1','v7'], 'v5':['v8','v9'], 'v6':['v3','v9'], 'v7':['v5','v8'], 'v8':['v9'], 'v9':[], 'v10':['v8'] };
+
+        let states = [], currentStep = 0;
+
+        function runAlgo() {
+            let color = {}, topo = [];
+            nodesData.forEach(n => color[n.id] = 'white');
+            
+            function dfs(u) {
+                color[u] = 'gray';
+                states.push({ msg: `מבקר בצומת ${u}`, color: {...color}, topo: [...topo] });
+                for(let v of adj[u]) if(color[v] === 'white') dfs(v);
+                color[u] = 'black';
+                topo.unshift(u);
+                states.push({ msg: `צומת ${u} סיים עבודה. הוספה לראש הרשימה.`, color: {...color}, topo: [...topo] });
+            }
+            ['v1','v2','v3','v4','v5','v6','v7','v8','v9','v10'].forEach(n => { if(color[n]==='white') dfs(n); });
+        }
+
+        function render() {
+            const state = states[currentStep];
+            document.getElementById('status-message').innerText = state.msg;
+            document.getElementById('step-counter').innerText = `${currentStep + 1}/${states.length}`;
+            
+            // תצוגה ברורה של הרשימה
+            document.getElementById('topo-list').innerHTML = state.topo.map(id => 
+                `<span class="bg-blue-600 text-white px-3 py-1 rounded-full font-bold shadow-sm">${id}</span>`
+            ).join(' &rarr; ');
+            
+            const svg = document.getElementById('graph-svg');
+            let html = `<defs><marker id="arr" viewBox="0 0 10 10" refX="25" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0l10 5-10 5z" fill="#9ca3af"/></marker></defs>`;
+            
+            edges.forEach(e => {
+                const n1 = nodesData.find(n => n.id === e.u), n2 = nodesData.find(n => n.id === e.v);
+                html += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}" stroke="#9ca3af" stroke-width="2" marker-end="url(#arr)" />`;
+            });
+            
+            nodesData.forEach(n => {
+                const c = state.color[n.id];
+                const fill = c === 'white' ? 'white' : (c === 'gray' ? '#60a5fa' : '#374151');
+                html += `<circle cx="${n.x}" cy="${n.y}" r="20" fill="${fill}" stroke="black" />
+                         <text x="${n.x}" y="${n.y+5}" text-anchor="middle" fill="${c === 'black' ? 'white' : 'black'}">${n.label}</text>`;
+            });
+            svg.innerHTML = html;
+        }
+
+        function nextStep() { if(currentStep < states.length-1) { currentStep++; render(); } }
+        function prevStep() { if(currentStep > 0) { currentStep--; render(); } }
+        
+        runAlgo();
+        render();
+    </script>
+</body>
+</html>

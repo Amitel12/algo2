@@ -43,10 +43,11 @@
         <!-- הודעת פתיחה קצרה -->
         <div class="text-center md:text-right mb-8">
             <h2 class="text-2xl font-extrabold text-gray-950">בחר אלגוריתם להמחשה</h2>
+            <p class="text-sm text-gray-500 mt-1">כל הסימולציות מותאמות אישית לעבודה חלקה ומהירה בתוך האייפד</p>
         </div>
 
-        <!-- גריד כרטיסיות האלגוריתמים -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- גריד כרטיסיות האלגוריתמים (רשת 2x2 מרווחת) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <!-- כרטיסיית BFS - פעילה ומקושרת -->
             <a href="bfs/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
@@ -71,7 +72,7 @@
                 <div class="absolute top-4 left-4">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
                 </div>
-                <div class="bg-amber-50/50 text-amber-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                <div class="bg-amber-50 text-amber-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M12 12H4"/></svg>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">Depth-First Search</h3>
@@ -102,6 +103,34 @@
                 </div>
             </a>
 
+            <!-- כרטיסיית מיון טופולוגי - פעילה ומקושרת -->
+            <a href="topological-sort/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
+                <div class="absolute top-4 left-4">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
+                </div>
+                <div class="bg-rose-50 text-rose-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Topological Sort</h3>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">מיון טופולוגי (Topo-Sort)</p>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                    יישור ליניארי של קודקודים בגרף מכוון ללא מעגלים (DAG) המבוסס על סדר זמני סיום יורד בריצת DFS אקדמית.
+                </p>
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
+                    פתח סימולציה &larr;
+                </div>
+            </a>
+
+        </div>
+
+        <!-- טיפ לשימוש ב-Notability בתחתית -->
+        <div class="mt-12 bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-right">
+            <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            </div>
+            <div class="text-sm text-blue-800 leading-relaxed">
+                <strong>טיפ להטמעה ב-Notability:</strong> העתק את הקישור הראשי של האתר שלך ב-Vercel. בתוך המחברת ב-Notability, הדבק את הקישור ובחר ב-<strong>Web Clip</strong>. לחץ לחיצה כפולה מהירה על הריבוע כדי להתחיל להשתמש בסימולציות ישירות בתוך המחברת!
+            </div>
         </div>
 
     </main>
