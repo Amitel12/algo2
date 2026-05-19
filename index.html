@@ -50,7 +50,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             <!-- כרטיסיית BFS - פעילה ומקושרת -->
-            <a href="/bfs" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
+            <a href="bfs/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
                 </div>
@@ -67,52 +67,42 @@
                 </div>
             </a>
 
-            <!-- כרטיסיית DFS - בקרוב -->
-            <div class="algo-card bg-white border border-gray-150 rounded-2xl p-6 shadow-sm opacity-80 relative overflow-hidden">
+            <!-- כרטיסיית DFS - פעילה ומקושרת -->
+            <a href="dfs/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
-                    <span class="bg-amber-50 text-amber-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-amber-200/50">בקרוב</span>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
                 </div>
                 <div class="bg-amber-50/50 text-amber-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M12 12H4"/></svg>
                 </div>
-                <h3 class="text-lg font-bold text-gray-400">Depth-First Search</h3>
-                <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-0.5">חיפוש לעומק (DFS)</p>
-                <p class="text-gray-500 text-sm mt-3 leading-relaxed">
-                    סימולציית מעבר על גרף לעומק, כולל זמני גילוי וסיום (Discovery & Finishing Times) וזיהוי סוגי קשתות בגרף.
+                <h3 class="text-lg font-bold text-gray-900">Depth-First Search</h3>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">חיפוש לעומק (DFS)</p>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                    סימולציית מעבר לעומק, כולל זמני גילוי וסיום (Discovery & Finishing) ומחסנית רקורסיה (Stack) בזמן אמת.
                 </p>
-                <div class="mt-4 text-xs font-bold text-gray-400">
-                    בפיתוח...
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
+                    פתח סימולציה &larr;
                 </div>
-            </div>
+            </a>
 
-            <!-- כרטיסיית דייקסטרה - בקרוב -->
-            <div class="algo-card bg-white border border-gray-150 rounded-2xl p-6 shadow-sm opacity-80 relative overflow-hidden">
+            <!-- כרטיסיית דייקסטרה - פעילה ומקושרת -->
+            <a href="dijkstra/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
-                    <span class="bg-amber-50 text-amber-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-amber-200/50">בקרוב</span>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
                 </div>
-                <div class="bg-purple-50/50 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                <div class="bg-purple-50 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><circle cx="12" cy="12" r="4"/></svg>
                 </div>
-                <h3 class="text-lg font-bold text-gray-400">Dijkstra's Algorithm</h3>
-                <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-0.5">אלגוריתם דייקסטרה</p>
-                <p class="text-gray-500 text-sm mt-3 leading-relaxed">
-                    מציאת המסלולים הקצרים ביותר מנקודת מקור בגרף ממושקל, באמצעות ניהול תור עדיפויות מבוסס ערכי d קטנים.
+                <h3 class="text-lg font-bold text-gray-900">Dijkstra's Algorithm</h3>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">אלגוריתם דייקסטרה</p>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+                    מציאת המסלולים הקצרים ביותר בגרף ממושקל, תוך שימוש בתור עדיפויות (Priority Queue) המבוסס על ערכי d.
                 </p>
-                <div class="mt-4 text-xs font-bold text-gray-400">
-                    בפיתוח...
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
+                    פתח סימולציה &larr;
                 </div>
-            </div>
+            </a>
 
-        </div>
-
-        <!-- טיפ לשימוש ב-Notability בתחתית -->
-        <div class="mt-12 bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-right">
-            <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-            </div>
-            <div class="text-sm text-blue-800 leading-relaxed">
-                <strong>טיפ להטמעה ב-Notability:</strong> העתק את הקישור הראשי של האתר שלך ב-Vercel. בתוך המחברת ב-Notability, הדבק את הקישור ובחר ב-<strong>Web Clip</strong>. לחץ לחיצה כפולה מהירה על הריבוע כדי להתחיל להשתמש בסימולציות ישירות בתוך המחברת!
-            </div>
         </div>
 
     </main>
