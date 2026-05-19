@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFS Algorithm Simulation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f9fafb; /* Tailwind gray-50 */
+        }
+        #graph-container {
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .stack-item {
+            transition: all 0.2s ease-in-out;
+        }
+        /* מניעת השהיית מגע באייפד ושיפור מהירות הלחיצה */
+        button {
+            touch-action: manipulation;
+        }
+        /* עיצוב מיכל המחסנית הפיזי */
+        .stack-bucket {
+            border-left: 3px solid #9ca3af;
+            border-right: 3px solid #9ca3af;
+            border-bottom: 3px solid #9ca3af;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen font-sans text-gray-800">
+
+    <!-- סרגל כותרת ולחצני שליטה עם onclick ישיר שעובד תמיד -->
+    <div class="relative bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex flex-row justify-between items-center z-10 shrink-0">
+        <div>
+            <h1 class="text-xl font-bold text-gray-800 tracking-tight">Depth-First Search (DFS)</h1>
+            <p class="text-xs text-gray-500">Step-by-step CLRS simulation</p>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+            <button onclick="prevStep()" id="btn-prev" class="cursor-pointer px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                &larr; הקודם
+            </button>
+            <span id="step-counter" class="text-xs font-semibold w-16 text-center text-gray-600">צעד 0/0</span>
+            <button onclick="nextStep()" id="btn-next" class="cursor-pointer px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                הבא &rarr;
+            </button>
+            <button onclick="resetSimulation()" id="btn-reset" class="cursor-pointer p-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 rounded-lg transition-colors" title="אתחול מחדש">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- שורת הודעות והסבר על הצעד הנוכחי -->
+    <div class="bg-blue-50 border-b border-blue-100 px-4 py-2 shrink-0">
+        <p id="status-message" class="text-blue-800 font-medium text-center md:text-left text-sm md:text-base h-6 overflow-hidden truncate"></p>
+    </div>
+
+    <!-- האזור המרכזי בעיצוב מחולק לשמאל וימין -->
+    <div class="flex-1 flex flex-col md:flex-row p-4 gap-4 min-h-0 overflow-hidden">
+        
+        <!-- פאנל שמאלי (3/4 רוחב): גרף מלא ומקרא צבעים צף -->
+        <div class="flex-1 md:w-3/4 flex flex-col min-h-0 relative">
+            <!-- אזור הגרף -->
+            <div class="flex-1 bg-white border border-gray-200 rounded-xl p-2 flex items-center justify-center min-h-0 shadow-sm relative">
+                <div id="graph-container">
+                    <svg id="graph-svg" viewBox="0 0 650 350" preserveAspectRatio="xMidYMid meet">
+                        <!-- הגדרות חצי חץ לסוגי קשתות שונים (כולל הזזה מחוץ לקודקוד עם refX=31) -->
+                        <defs>
+                            <marker id="arrow-default" viewBox="0 0 10 10" refX="31" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#94a3b8" />
+                            </marker>
+                            <marker id="arrow-active" viewBox="0 0 10 10" refX="31" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#3b82f6" />
+                            </marker>
+                            <marker id="arrow-tree" viewBox="0 0 10 10" refX="31" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#10b981" />
+                            </marker>
+                            <marker id="arrow-back" viewBox="0 0 10 10" refX="31" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#ef4444" />
+                            </marker>
+                            <marker id="arrow-forward" viewBox="0 0 10 10" refX="31" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#f97316" />
+                            </marker>
+                            <marker id="arrow-cross" viewBox="0 0 10 10" refX="31" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#a855f7" />
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <!-- מקרא צבעי קשתות צף (אסתטי ואינו תופס מקום בלוח הבקרה) -->
+                <div class="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl p-2.5 shadow-sm text-[10px] md:text-xs flex flex-col gap-1.5 z-20 w-32 md:w-36" dir="rtl">
+                    <span class="font-bold text-gray-700 border-b border-gray-100 pb-1 mb-0.5">סיווג קשתות:</span>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-1.5 bg-[#cbd5e1] rounded-sm shrink-0"></span>
+                        <span class="text-gray-600">טרם נסרקה</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-1.5 bg-[#3b82f6] rounded-sm shrink-0"></span>
+                        <span class="text-gray-600">נבחנת כעת</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-1.5 bg-[#10b981] rounded-sm shrink-0"></span>
+                        <span class="text-gray-600">עץ (Tree)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-1.5 bg-[#ef4444] rounded-sm shrink-0"></span>
+                        <span class="text-gray-600">אחורית (Back)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-1.5 bg-[#f97316] rounded-sm shrink-0"></span>
+                        <span class="text-gray-600">קדימה (Forward)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-1.5 bg-[#a855f7] rounded-sm shrink-0"></span>
+                        <span class="text-gray-600">חצייה (Cross)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- פאנל ימני (1/4 רוחב): מערכי זמנים ואבות, מחסנית Stack, ועץ T_dfs מתחתיהם -->
+        <div class="md:w-1/4 flex flex-col space-y-3 min-h-0 shrink-0 justify-start overflow-y-auto pr-1">
+            <!-- אזור טבלת האבות והמרחקים -->
+            <div class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col shadow-sm shrink-0">
+                <span class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider text-center shrink-0" dir="rtl">זמנים (b, f) ואבות (&pi;)</span>
+                <div id="pi-array-container" class="w-full mt-1 shrink-0">
+                    <!-- הטבלה המוזרקת כאן -->
+                </div>
+            </div>
+
+            <!-- תצוגת המחסנית (Stack) האנכית - קומפקטית ומעוצבת -->
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-3 flex flex-col shrink-0">
+                <span class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider text-center">Mחסנית הרקורסיה (Stack)</span>
+                <div class="flex flex-col items-center justify-center p-2">
+                    <div id="stack-container" class="stack-bucket w-20 min-h-[90px] flex flex-col-reverse p-1 gap-1 justify-start bg-gray-50">
+                        <!-- איברי המחסנית יוזרקו כאן מלמטה למעלה -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- קבוצות יער ה-DFS הפורמליות (T_dfs) -->
+            <div class="bg-emerald-50 border border-emerald-100 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0" dir="rtl">
+                <span class="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wider text-center">יער DFS (T<sub>dfs</sub>) לפי ההגדרה</span>
+                <div class="flex flex-col gap-2 text-xs font-serif text-emerald-900" dir="ltr">
+                    <div id="v-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1.5 rounded border border-emerald-200/50 truncate">V<sub>dfs</sub> = &empty;</div>
+                    <div id="e-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1.5 rounded border border-emerald-200/50 break-words">E<sub>dfs</sub> = &empty;</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- הגדרות הגרף המכוון הרשמי מתוך ה-CLRS ---
+        const nodesData = [
+            {id: 'u', x: 120, y: 100, pos: 'top'},
+            {id: 'v', x: 300, y: 100, pos: 'top'},
+            {id: 'w', x: 480, y: 100, pos: 'top'},
+            {id: 'x', x: 120, y: 260, pos: 'bottom'},
+            {id: 'y', x: 300, y: 260, pos: 'bottom'},
+            {id: 'z', x: 480, y: 260, pos: 'bottom'}
+        ];
+
+        // קשתות מכוונות
+        const edgesData = [
+            {u: 'u', v: 'v'},
+            {u: 'u', v: 'x'},
+            {u: 'v', v: 'y'},
+            {u: 'y', v: 'x'},
+            {u: 'x', v: 'v'},
+            {u: 'w', v: 'y'},
+            {u: 'w', v: 'z'},
+            {u: 'z', v: 'z'} // לולאה עצמית על z
+        ];
+
+        // רשימת שכנים מכוונת וממוינת אלפביתית לפי ה-CLRS
+        const adjList = {
+            'u': ['v', 'x'],
+            'v': ['y'],
+            'w': ['y', 'z'],
+            'x': ['v'],
+            'y': ['x'],
+            'z': ['z']
+        };
+
+        let states = [];
+        
+        // יצירת כלל מצבי הסימולציה מראש למעבר חלק (בדיוק כמו ב-CLRS)
+        function generateDFSStates() {
+            states = [];
+            
+            // מצב בסיס התחלתי
+            let currentState = {
+                nodes: {},
+                stack: [],
+                treeEdges: [],
+                backEdges: [],
+                forwardEdges: [],
+                crossEdges: [],
+                activeEdge: null,
+                processingNode: null,
+                time: 0,
+                msg: "מצב התחלתי: כל v ב-V לבן, b[v] = NIL, f[v] = NIL, &pi;[v] = NIL"
+            };
+
+            nodesData.forEach(n => {
+                currentState.nodes[n.id] = {color: 'white', b: '&mdash;', f: '&mdash;', pi: 'NIL'};
+            });
+
+            const pushState = (msg) => {
+                states.push(JSON.parse(JSON.stringify({...currentState, msg})));
+            };
+
+            pushState(currentState.msg);
+
+            let time = 0;
+            let color = { u:'white', v:'white', w:'white', x:'white', y:'white', z:'white' };
+            let b = { u:'&mdash;', v:'&mdash;', w:'&mdash;', x:'&mdash;', y:'&mdash;', z:'&mdash;' };
+            let f = { u:'&mdash;', v:'&mdash;', w:'&mdash;', x:'&mdash;', y:'&mdash;', z:'&mdash;' };
+            let pi = { u:'NIL', v:'NIL', w:'NIL', x:'NIL', y:'NIL', z:'NIL' };
+            let stack = [];
+            let treeEdges = [];
+            let backEdges = [];
+            let forwardEdges = [];
+            let crossEdges = [];
+
+            // פונקציית ה-DFS-Visit הרקורסיבית שמייצרת את הצעדים
+            function dfsVisit(uNode) {
+                time++;
+                b[uNode] = time;
+                color[uNode] = 'gray';
+                stack.push(uNode);
+                
+                currentState.time = time;
+                currentState.nodes[uNode] = {color: 'gray', b: time, f: '&mdash;', pi: pi[uNode]};
+                currentState.stack = [...stack];
+                currentState.processingNode = uNode;
+                pushState("גילוי קודקוד " + uNode + ": צבע = אפור, b[" + uNode + "] = " + time + ", הכנסה ל-Stack");
+
+                for (let vNode of adjList[uNode]) {
+                    currentState.activeEdge = {u: uNode, v: vNode};
+                    pushState("בחינת קשת מכוונת (" + uNode + ", " + vNode + ")");
+
+                    if (color[vNode] === 'white') {
+                        pi[vNode] = uNode;
+                        treeEdges.push({u: uNode, v: vNode});
+                        currentState.nodes[vNode].pi = uNode;
+                        currentState.treeEdges = [...treeEdges];
+                        pushState("קודקוד " + vNode + " לבן &larr; קשת עץ (Tree Edge), הגדרת &pi;[" + vNode + "] = " + uNode + ", קריאה רקורסיבית");
+                        
+                        currentState.activeEdge = null;
+                        dfsVisit(vNode);
+                        
+                        // בחזרה מהרקורסיה
+                        currentState.processingNode = uNode;
+                        pushState("חזרנו מהקריאה הרקורסיבית אל קודקוד " + uNode + ". נמשיך לבדוק שאר קשתות היוצאות ממנו.");
+                    } 
+                    else if (color[vNode] === 'gray') {
+                        // קשת אחורית (סגירת מעגל לאב קדמון)
+                        backEdges.push({u: uNode, v: vNode});
+                        currentState.backEdges = [...backEdges];
+                        pushState("קודקוד " + vNode + " אפור (אב קדמון) &larr; קשת אחורית (Back Edge), סגירת מעגל. נדלג.");
+                    } 
+                    else if (color[vNode] === 'black') {
+                        // קבוצה שחורה: קשת קדימה או קשת חצייה
+                        if (b[uNode] < b[vNode]) {
+                            forwardEdges.push({u: uNode, v: vNode});
+                            currentState.forwardEdges = [...forwardEdges];
+                            pushState("קודקוד " + vNode + " שחור וכן b[" + uNode + "] < b[" + vNode + "] &larr; קשת קדימה (Forward Edge). נדלג.");
+                        } else {
+                            crossEdges.push({u: uNode, v: vNode});
+                            currentState.crossEdges = [...crossEdges];
+                            pushState("קודקוד " + vNode + " שחור וכן b[" + uNode + "] > b[" + vNode + "] &larr; קשת חצייה (Cross Edge). נדלג.");
+                        }
+                    }
+                    currentState.activeEdge = null;
+                }
+
+                time++;
+                f[uNode] = time;
+                color[uNode] = 'black';
+                stack.pop();
+
+                currentState.time = time;
+                currentState.nodes[uNode] = {color: 'black', b: b[uNode], f: time, pi: pi[uNode]};
+                currentState.stack = [...stack];
+                currentState.processingNode = null;
+                pushState("סיום סריקת קודקוד " + uNode + ": צבע = שחור, f[" + uNode + "] = " + time + ", הוצאה מה-Stack");
+            }
+
+            // לולאת ה-DFS הראשית (לפי סדר אלפביתי של קודקודים)
+            const mainVertices = ['u', 'v', 'w', 'x', 'y', 'z'];
+            for (let startNode of mainVertices) {
+                if (color[startNode] === 'white') {
+                    pushState("בחירת קודקוד מקור חדש " + startNode + " &larr; הפעלת DFS-Visit(" + startNode + ")");
+                    dfsVisit(startNode);
+                } else {
+                    pushState("קודקוד " + startNode + " כבר נסרק (צבעו != לבן) &larr; דילוג");
+                }
+            }
+
+            pushState("סיום ריצת DFS: כל הקודקודים והקשתות נסרקו וסווגו!");
+        }
+
+        let currentStep = 0;
+
+        // פונקציית הרינדור הראשית של הממשק
+        function render() {
+            const state = states[currentStep];
+            
+            // 1. עדכון טקסטים וכפתורים
+            document.getElementById('status-message').innerHTML = state.msg;
+            document.getElementById('step-counter').innerText = `צעד ${currentStep} / ${states.length - 1}`;
+            document.getElementById('btn-prev').disabled = currentStep === 0;
+            document.getElementById('btn-next').disabled = currentStep === states.length - 1;
+
+            // 2. ציור הגרף (SVG)
+            const svg = document.getElementById('graph-svg');
+            
+            // נשמור את ה-defs המקוריים של החצים
+            const defs = svg.querySelector('defs').outerHTML;
+            let svgContent = defs;
+
+            // ציור קשתות הגרף
+            edgesData.forEach(e => {
+                const isSelfLoop = (e.u === 'z' && e.v === 'z');
+                
+                // בדיקת סוג הקשת לפי מצב הסימולציה
+                const isActive = state.activeEdge && (state.activeEdge.u === e.u && state.activeEdge.v === e.v);
+                const isTree = state.treeEdges.some(te => te.u === e.u && te.v === e.v);
+                const isBack = state.backEdges.some(be => be.u === e.u && be.v === e.v);
+                const isForward = state.forwardEdges.some(fe => fe.u === e.u && fe.v === e.v);
+                const isCross = state.crossEdges.some(ce => ce.u === e.u && ce.v === e.v);
+
+                // צבעי ברירת מחדל בולטים וברורים יותר
+                let stroke = '#cbd5e1'; // default slate-300 (darker and more visible)
+                let strokeWidth = 2.5;  // slightly thicker
+                let strokeDasharray = "";
+                let markerId = "arrow-default";
+
+                if (isActive) {
+                    stroke = '#3b82f6'; // blue-500 highlighting
+                    strokeWidth = 4.5;
+                    markerId = "arrow-active";
+                } else if (isTree) {
+                    stroke = '#10b981'; // emerald-500 for Tree Edge
+                    strokeWidth = 4;
+                    markerId = "arrow-tree";
+                } else if (isBack) {
+                    stroke = '#ef4444'; // red-500 for Back Edge
+                    strokeWidth = 4;
+                    markerId = "arrow-back";
+                } else if (isForward) {
+                    stroke = '#f97316'; // orange-500 for Forward Edge
+                    strokeWidth = 3.5;
+                    strokeDasharray = "4,3";
+                    markerId = "arrow-forward";
+                } else if (isCross) {
+                    stroke = '#a855f7'; // purple-500 for Cross Edge
+                    strokeWidth = 3.5;
+                    strokeDasharray = "4,3";
+                    markerId = "arrow-cross";
+                }
+
+                if (isSelfLoop) {
+                    // ציור לולאה עצמית מכוונת ויפה על z - מסתיימת במרכז z (480, 260) להתאמת החץ בצורה מושלמת
+                    svgContent += `
+                        <path d="M 480 260 C 545 200, 545 320, 480 260" 
+                              fill="none" 
+                              stroke="${stroke}" 
+                              stroke-width="${strokeWidth}" 
+                              stroke-dasharray="${strokeDasharray}"
+                              marker-end="url(#${markerId})" />
+                    `;
+                } else {
+                    // קשת רגילה מכוונת ישר
+                    const n1 = nodesData.find(n => n.id === e.u);
+                    const n2 = nodesData.find(n => n.id === e.v);
+                    
+                    svgContent += `
+                        <line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}" 
+                              stroke="${stroke}" 
+                              stroke-width="${strokeWidth}" 
+                              stroke-dasharray="${strokeDasharray}" 
+                              stroke-linecap="round" 
+                              marker-end="url(#${markerId})" />
+                    `;
+                }
+            });
+
+            // ציור קודקודים (מצוירים מעל הקווים)
+            nodesData.forEach(n => {
+                const nodeState = state.nodes[n.id];
+                let fill = '#ffffff';
+                let textColor = '#111827';
+                
+                if (nodeState.color === 'gray') { fill = '#d1d5db'; } // אפור
+                if (nodeState.color === 'black') { fill = '#374151'; textColor = '#ffffff'; } // שחור
+
+                const isProcessing = state.processingNode === n.id;
+                const stroke = isProcessing ? '#3b82f6' : '#1f2937';
+                const strokeWidth = isProcessing ? 5 : 2;
+
+                svgContent += `<circle cx="${n.x}" cy="${n.y}" r="25" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
+                
+                // תצוגת זמני b/f בתוך העיגול (בדומה ל-1/8 המפורסם של CLRS)
+                const textB = nodeState.b;
+                const textF = nodeState.f;
+                const displayText = `${textB}/${textF}`;
+                
+                svgContent += `<text x="${n.x}" y="${n.y + 1}" fill="${textColor}" font-size="16" font-family="sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="central">${displayText}</text>`;
+                
+                // תצוגת תווית הקודקוד מחוץ לעיגול
+                const labelY = n.pos === 'top' ? n.y - 40 : n.y + 40;
+                svgContent += `<text x="${n.x}" y="${labelY}" fill="#4b5563" font-size="20" font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="central">${n.id}</text>`;
+            });
+
+            svg.innerHTML = svgContent;
+
+            // 3. רינדור המחסנית (Stack) האנכית
+            const stackContainer = document.getElementById('stack-container');
+            if (state.stack.length === 0) {
+                stackContainer.innerHTML = `<div class="text-gray-400 italic text-xs py-4 text-center w-full">ריק</div>`;
+            } else {
+                let stackHTML = '';
+                // נרנדר את האיברים כך שהאחרון שנכנס יהיה הכי למעלה במיכל
+                state.stack.forEach(nodeId => {
+                    const nodeState = state.nodes[nodeId];
+                    stackHTML += `
+                        <div class="stack-item w-full bg-gray-300 border border-gray-600 text-gray-800 text-center py-1.5 rounded font-serif italic font-bold shadow-sm">
+                            ${nodeId}
+                            <span class="text-[9px] block not-italic font-bold text-gray-500">b = ${nodeState.b}</span>
+                        </div>
+                    `;
+                });
+                stackContainer.innerHTML = stackHTML;
+            }
+
+            // 4. רינדור מערכי אבות וזמנים (d/b, f, pi)
+            const piContainer = document.getElementById('pi-array-container');
+            let piHTML = `
+                <table class="w-full text-center border-collapse text-sm bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold text-xs">
+                            <th class="py-1 px-1.5 border-r border-gray-200 font-serif italic">v</th>
+                            <th class="py-1 px-1.5 border-r border-gray-200 font-serif">b[v]</th>
+                            <th class="py-1 px-1.5 border-r border-gray-200 font-serif">f[v]</th>
+                            <th class="py-1 px-1.5 font-serif">&pi;[v]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            const sortedNodes = [...nodesData].sort((a, b) => a.id.localeCompare(b.id));
+            
+            sortedNodes.forEach(n => {
+                const nodeVal = state.nodes[n.id];
+                const piVal = nodeVal.pi;
+                const bVal = nodeVal.b;
+                const fVal = nodeVal.f;
+                
+                const displayPi = piVal === 'NIL' ? '&empty;' : piVal;
+                
+                const bClass = bVal !== '&mdash;' ? 'text-blue-600 font-bold bg-blue-50/50 rounded px-1' : 'text-gray-300';
+                const fClass = fVal !== '&mdash;' ? 'text-red-600 font-bold bg-red-50/50 rounded px-1' : 'text-gray-300';
+                const piClass = piVal !== 'NIL' ? 'text-emerald-600 font-bold bg-emerald-50/50 rounded px-1' : 'text-gray-300';
+
+                piHTML += `
+                    <tr class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
+                        <td class="py-1 px-1.5 border-r border-gray-200 font-serif font-bold italic text-gray-700 text-xs">${n.id}</td>
+                        <td class="py-1 px-1.5 border-r border-gray-200 font-semibold ${bClass} text-xs">${bVal}</td>
+                        <td class="py-1 px-1.5 border-r border-gray-200 font-semibold ${fClass} text-xs">${fVal}</td>
+                        <td class="py-1 px-1.5 font-semibold ${piClass} text-xs">${displayPi}</td>
+                    </tr>
+                `;
+            });
+            piHTML += `
+                    </tbody>
+                </table>
+            `;
+            piContainer.innerHTML = piHTML;
+
+            // 5. רינדור קבוצות יער ה-DFS (V_dfs, E_dfs)
+            let vDfs = [];
+            let eDfs = [];
+            
+            const sortedNodesForSet = [...nodesData].sort((a, b) => a.id.localeCompare(b.id));
+            
+            sortedNodesForSet.forEach(n => {
+                const nodeState = state.nodes[n.id];
+                // קודקודים מצטרפים ל-V_dfs כשהם כבר שחורים (נסרקו במלואם)
+                if (nodeState.color === 'black') {
+                    vDfs.push(n.id);
+                    if (nodeState.pi !== 'NIL') {
+                        eDfs.push(`(${nodeState.pi}, ${n.id})`);
+                    }
+                }
+            });
+
+            document.getElementById('v-bfs-container').innerHTML = `V<sub>dfs</sub> = { ${vDfs.length > 0 ? vBfs = vDfs.join(', ') : '&empty;'} }`;
+            document.getElementById('e-bfs-container').innerHTML = `E<sub>dfs</sub> = { ${eDfs.length > 0 ? eDfs.join(', ') : '&empty;'} }`;
+        }
+
+        // --- בקרת ניווט ואינטראקציה ---
+        function nextStep() {
+            if (currentStep < states.length - 1) {
+                currentStep++;
+                render();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                render();
+            }
+        }
+
+        // אתחול מחדש
+        function resetSimulation() {
+            currentStep = 0;
+            render();
+        }
+
+        // מעבר עם מקשי החצים במקלדת
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                prevStep();
+            }
+        });
+
+        // אתחול בטוח לכל פלטפורמה
+        generateDFSStates();
+        render();
+
+        window.onload = () => {
+            generateDFSStates();
+            render();
+        };
+
+    </script>
+</body>
+</html>
