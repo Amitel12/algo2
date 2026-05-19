@@ -12,7 +12,6 @@
             overflow: hidden;
             background-color: #f9fafb; /* Tailwind gray-50 */
         }
-
         #graph-container {
             width: 100%;
             height: 100%;
@@ -21,12 +20,10 @@
             justify-content: center;
             align-items: center;
         }
-
         svg {
             max-width: 100%;
             max-height: 100%;
         }
-
         .queue-item {
             transition: all 0.2s ease-in-out;
         }
@@ -44,7 +41,7 @@
             <h1 class="text-xl font-bold text-gray-800 tracking-tight">Breadth-First Search (BFS)</h1>
             <p class="text-xs text-gray-500">Step-by-step CLRS simulation</p>
         </div>
-
+        
         <div class="flex items-center space-x-2">
             <button onclick="prevStep()" id="btn-prev" class="cursor-pointer px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 &larr; הקודם
@@ -54,7 +51,7 @@
                 הבא &rarr;
             </button>
             <button onclick="resetSimulation()" id="btn-reset" class="cursor-pointer p-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 rounded-lg transition-colors" title="אתחול מחדש">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </button>
         </div>
     </div>
@@ -66,29 +63,20 @@
 
     <!-- האזור המרכזי בעיצוב מחולק לשמאל וימין -->
     <div class="flex-1 flex flex-col md:flex-row p-4 gap-4 min-h-0 overflow-hidden">
-
-        <!-- פאנל שמאלי (3/4 רוחב): גרף ועץ ה-BFS הפורמלי -->
-        <div class="flex-1 md:w-3/4 flex flex-col space-y-3 min-h-0">
+        
+        <!-- פאנל שמאלי (3/4 רוחב): גרף מלא (סופר מרווח ונקי) -->
+        <div class="flex-1 md:w-3/4 flex flex-col min-h-0">
             <!-- אזור הגרף -->
             <div class="flex-1 bg-white border border-gray-200 rounded-xl p-2 flex items-center justify-center min-h-0 shadow-sm relative">
                 <div id="graph-container">
                     <svg id="graph-svg" viewBox="0 0 650 350" preserveAspectRatio="xMidYMid meet"></svg>
                 </div>
             </div>
-
-            <!-- קבוצות עץ ה-BFS הפורמליות בתחתית הפאנל השמאלי -->
-            <div class="bg-emerald-50 border border-emerald-100 shadow-sm rounded-xl p-3 flex flex-col justify-center min-h-[75px] shrink-0" dir="rtl">
-                <span class="text-xs font-bold text-emerald-800 mb-1 uppercase tracking-wider text-right">עץ BFS (T<sub>bfs</sub>) לפי ההגדרה</span>
-                <div class="flex flex-row gap-6 text-sm font-serif text-emerald-900 justify-start" dir="ltr">
-                    <div id="v-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1 rounded border border-emerald-200/50">V<sub>bfs</sub> = &empty;</div>
-                    <div id="e-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1 rounded border border-emerald-200/50">E<sub>bfs</sub> = &empty;</div>
-                </div>
-            </div>
         </div>
 
-        <!-- פאנל ימני (1/4 רוחב): מערכי מרחק ואבות ותור Q ישירות מתחתיו (קומפקטי ומיושר למעלה) -->
-        <div class="md:w-1/4 flex flex-col space-y-3 min-h-0 shrink-0 justify-start">
-            <!-- אזור טבלת המרחקים והאבות (בגודל הטבעי שלה ללא מתיחה) -->
+        <!-- פאנל ימני (1/4 רוחב): מערכי מרחק ואבות, תור Q, ועץ T_bfs מתחתיהם (קומפקטי ומיושר למעלה) -->
+        <div class="md:w-1/4 flex flex-col space-y-3 min-h-0 shrink-0 justify-start overflow-y-auto pr-1">
+            <!-- אזור טבלת האבות והמרחקים -->
             <div class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col shadow-sm shrink-0">
                 <span class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider text-center shrink-0" dir="rtl">מרחקים (d) ואבות (&pi;)</span>
                 <div id="pi-array-container" class="w-full mt-1 shrink-0">
@@ -96,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- תצוגת התור (Q) - צמודה וקומפקטית ישר מתחת -->
+            <!-- תצוגת התור (Q) - צמודה וקומפקטית -->
             <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0">
                 <span class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider text-center">Q (Queue)</span>
                 <div class="flex items-center justify-center gap-2">
@@ -106,6 +94,15 @@
                     </div>
                 </div>
             </div>
+
+            <!-- קבוצות עץ ה-BFS הפורמליות (T_bfs) - ממוקם כעת בצד ימין מתחת לתור Q -->
+            <div class="bg-emerald-50 border border-emerald-100 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0" dir="rtl">
+                <span class="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wider text-center">עץ BFS (T<sub>bfs</sub>) לפי ההגדרה</span>
+                <div class="flex flex-col gap-2 text-xs font-serif text-emerald-900" dir="ltr">
+                    <div id="v-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1.5 rounded border border-emerald-200/50 truncate">V<sub>bfs</sub> = &empty;</div>
+                    <div id="e-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1.5 rounded border border-emerald-200/50 break-words">E<sub>bfs</sub> = &empty;</div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -113,304 +110,305 @@
     <script>
         // --- הגדרות הגרף לפי הספר (CLRS) ---
         const nodesData = [
-        {id: 'r', x: 100, y: 100, pos: 'top'},
-        {id: 's', x: 250, y: 100, pos: 'top'},
-        {id: 't', x: 400, y: 100, pos: 'top'},
-        {id: 'u', x: 550, y: 100, pos: 'top'},
-        {id: 'v', x: 100, y: 250, pos: 'bottom'},
-        {id: 'w', x: 250, y: 250, pos: 'bottom'},
-        {id: 'x', x: 400, y: 250, pos: 'bottom'},
-        {id: 'y', x: 550, y: 250, pos: 'bottom'}
+            {id: 'r', x: 100, y: 100, pos: 'top'},
+            {id: 's', x: 250, y: 100, pos: 'top'},
+            {id: 't', x: 400, y: 100, pos: 'top'},
+            {id: 'u', x: 550, y: 100, pos: 'top'},
+            {id: 'v', x: 100, y: 250, pos: 'bottom'},
+            {id: 'w', x: 250, y: 250, pos: 'bottom'},
+            {id: 'x', x: 400, y: 250, pos: 'bottom'},
+            {id: 'y', x: 550, y: 250, pos: 'bottom'}
         ];
 
         const edgesData = [
-        {u: 'r', v: 's'}, {u: 'r', v: 'v'},
-        {u: 's', v: 'w'},
-        {u: 'w', v: 't'}, {u: 'w', v: 'x'},
-        {u: 't', v: 'u'}, {u: 't', v: 'x'},
-        {u: 'x', v: 'y'},
-        {u: 'u', v: 'y'}
+            {u: 'r', v: 's'}, {u: 'r', v: 'v'},
+            {u: 's', v: 'w'},
+            {u: 'w', v: 't'}, {u: 'w', v: 'x'},
+            {u: 't', v: 'u'}, {u: 't', v: 'x'},
+            {u: 'x', v: 'y'},
+            {u: 'u', v: 'y'}
         ];
 
         const adjList = {
-        'r': ['s', 'v'],
-        's': ['w', 'r'],
-        't': ['w', 'x', 'u'],
-        'u': ['t', 'y'],
-        'v': ['r'],
-        'w': ['s', 't', 'x'],
-        'x': ['w', 't', 'y'],
-        'y': ['u', 'x']
+            'r': ['s', 'v'],
+            's': ['w', 'r'],
+            't': ['w', 'x', 'u'],
+            'u': ['t', 'y'],
+            'v': ['r'],
+            'w': ['s', 't', 'x'],
+            'x': ['w', 't', 'y'],
+            'y': ['u', 'x']
         };
 
         let states = [];
-
+        
         // יצירת כלל מצבי הסימולציה מראש למעבר חלק
         function generateBFSStates() {
-        states = [];
-        let currentState = {
-        nodes: {},
-        q: [],
-        treeEdges: [],
-        activeEdge: null,
-        processingNode: null,
-        msg: "מצב התחלתי: כל הקודקודים טרם נתגלו (לבנים) עם מרחק ∞."
-        };
+            states = [];
+            let currentState = {
+                nodes: {},
+                q: [],
+                treeEdges: [],
+                activeEdge: null,
+                processingNode: null,
+                msg: "מצב התחלתי: כל הקודקודים טרם נתגלו (לבנים) עם מרחק ∞."
+            };
 
-        nodesData.forEach(n => {
-        currentState.nodes[n.id] = {color: 'white', d: '∞', pi: 'NIL'};
-        });
+            nodesData.forEach(n => {
+                currentState.nodes[n.id] = {color: 'white', d: '∞', pi: 'NIL'};
+            });
 
-        const pushState = (msg) => {
-        states.push(JSON.parse(JSON.stringify({...currentState, msg})));
-        };
+            const pushState = (msg) => {
+                states.push(JSON.parse(JSON.stringify({...currentState, msg})));
+            };
 
-        pushState(currentState.msg);
+            pushState(currentState.msg);
 
-        // 1. אתחול קודקוד המקור s
-        currentState.nodes['s'].color = 'gray';
-        currentState.nodes['s'].d = 0;
-        currentState.q.push('s');
-        pushState("מתחילים את ריצת ה-BFS מקודקוד המקור s. צובעים באפור, מרחק 0, ומכניסים לתור.");
+            // 1. אתחול קודקוד המקור s
+            currentState.nodes['s'].color = 'gray';
+            currentState.nodes['s'].d = 0;
+            currentState.q.push('s');
+            pushState("מתחילים את ריצת ה-BFS מקודקוד המקור s. צובעים באפור, מרחק 0, ומכניסים לתור.");
 
-        let q = ['s'];
-        let d = {s: 0};
-        let color = {s: 'gray', r:'white', t:'white', u:'white', v:'white', w:'white', x:'white', y:'white'};
+            let q = ['s'];
+            let d = {s: 0};
+            let color = {s: 'gray', r:'white', t:'white', u:'white', v:'white', w:'white', x:'white', y:'white'};
 
-        // 2. לולאת ה-BFS המרכזית
-        while(q.length > 0) {
-        let u = q[0];
-        currentState.processingNode = u;
-        pushState(`קודקוד '${u}' בראש התור. נבחן את השכנים שלו.`);
+            // 2. לולאת ה-BFS המרכזית
+            while(q.length > 0) {
+                let u = q[0];
+                currentState.processingNode = u;
+                pushState(`קודקוד '${u}' בראש התור. נבחן את השכנים שלו.`);
 
-        q.shift();
-        currentState.q = [...q];
-        pushState(`מוציאים את '${u}' מהתור (Dequeue).`);
+                q.shift();
+                currentState.q = [...q];
+                pushState(`מוציאים את '${u}' מהתור (Dequeue).`);
 
-        for(let v of adjList[u]) {
-        currentState.activeEdge = {u, v};
-        pushState(`בודקים את השכן '${v}' של הקודקוד '${u}'.`);
+                for(let v of adjList[u]) {
+                    currentState.activeEdge = {u, v};
+                    pushState(`בודקים את השכן '${v}' של הקודקוד '${u}'.`);
 
-        if(color[v] === 'white') {
-        color[v] = 'gray';
-        d[v] = d[u] + 1;
-        currentState.nodes[v] = {color: 'gray', d: d[v], pi: u};
-        currentState.treeEdges.push({u, v});
-        pushState("השכן '" + v + "' לבן (טרם נתגלה). נצבע באפור, נעדכן אבא ל-'" + u + "', מרחק ל-" + d[v] + ", ונסמן את הקשת.");
+                    if(color[v] === 'white') {
+                        color[v] = 'gray';
+                        d[v] = d[u] + 1;
+                        currentState.nodes[v] = {color: 'gray', d: d[v], pi: u};
+                        currentState.treeEdges.push({u, v});
+                        pushState("השכן '" + v + "' לבן (טרם נתגלה). נצבע באפור, נעדכן אבא ל-'" + u + "', מרחק ל-" + d[v] + ", ונסמן את הקשת.");
 
-        q.push(v);
-        currentState.q = [...q];
-        pushState(`מכניסים את '${v}' לתור (Enqueue).`);
-        } else {
-        pushState(`השכן '${v}' כבר נתגלה (צבעו ${color[v] === 'gray' ? 'אפור' : 'שחור'}). נדלג עליו.`);
-        }
-        currentState.activeEdge = null;
-        }
-        color[u] = 'black';
-        currentState.nodes[u].color = 'black';
-        currentState.processingNode = null;
-        pushState(`סיימנו לבדוק את כל השכנים של '${u}'. נצבע אותו בשחור.`);
-        }
-
-        currentState.processingNode = null;
-        currentState.activeEdge = null;
-        pushState("התור ריק. אלגוריתם ה-BFS הסתיים בהצלחה!");
+                        q.push(v);
+                        currentState.q = [...q];
+                        pushState(`מכניסים את '${v}' לתור (Enqueue).`);
+                    } else {
+                        pushState(`השכן '${v}' כבר נתגלה (צבעו ${color[v] === 'gray' ? 'אפור' : 'שחור'}). נדלג עליו.`);
+                    }
+                    currentState.activeEdge = null;
+                }
+                color[u] = 'black';
+                currentState.nodes[u].color = 'black';
+                currentState.processingNode = null;
+                pushState(`סיימנו לבדוק את כל השכנים של '${u}'. נצבע אותו בשחור.`);
+            }
+            
+            currentState.processingNode = null;
+            currentState.activeEdge = null;
+            pushState("התור ריק. אלגוריתם ה-BFS הסתיים בהצלחה!");
         }
 
         let currentStep = 0;
 
         // פונקציית הרינדור הראשית של הממשק
         function render() {
-        const state = states[currentStep];
+            const state = states[currentStep];
+            
+            // 1. עדכון טקסטים וכפתורים
+            document.getElementById('status-message').innerText = state.msg;
+            document.getElementById('step-counter').innerText = `צעד ${currentStep} / ${states.length - 1}`;
+            document.getElementById('btn-prev').disabled = currentStep === 0;
+            document.getElementById('btn-next').disabled = currentStep === states.length - 1;
 
-        // 1. עדכון טקסטים וכפתורים
-        document.getElementById('status-message').innerText = state.msg;
-        document.getElementById('step-counter').innerText = `צעד ${currentStep} / ${states.length - 1}`;
-        document.getElementById('btn-prev').disabled = currentStep === 0;
-        document.getElementById('btn-next').disabled = currentStep === states.length - 1;
+            // 2. ציור הגרף (SVG)
+            const svg = document.getElementById('graph-svg');
+            let svgContent = '';
 
-        // 2. ציור הגרף (SVG)
-        const svg = document.getElementById('graph-svg');
-        let svgContent = '';
+            // ציור קשתות הגרף
+            edgesData.forEach(e => {
+                const piU = state.nodes[e.u].pi;
+                const piV = state.nodes[e.v].pi;
+                
+                const isTreeEdgeUtoV = (piV === e.u);
+                const isTreeEdgeVtoU = (piU === e.v);
+                
+                const isConfirmedTreeEdge = (isTreeEdgeUtoV && state.nodes[e.v].color === 'black') || 
+                                            (isTreeEdgeVtoU && state.nodes[e.u].color === 'black');
+                
+                const isPendingTreeEdge = (isTreeEdgeUtoV && state.nodes[e.v].color === 'gray') || 
+                                          (isTreeEdgeVtoU && state.nodes[e.u].color === 'gray');
 
-        // ציור קשתות הגרף
-        edgesData.forEach(e => {
-        const piU = state.nodes[e.u].pi;
-        const piV = state.nodes[e.v].pi;
+                const isActive = state.activeEdge && ((state.activeEdge.u === e.u && state.activeEdge.v === e.v) || (state.activeEdge.u === e.v && state.activeEdge.v === e.u));
 
-        const isTreeEdgeUtoV = (piV === e.u);
-        const isTreeEdgeVtoU = (piU === e.v);
+                let stroke = '#e5e7eb';
+                let strokeWidth = 2;
+                let strokeDasharray = "";
 
-        const isConfirmedTreeEdge = (isTreeEdgeUtoV && state.nodes[e.v].color === 'black') ||
-        (isTreeEdgeVtoU && state.nodes[e.u].color === 'black');
+                if (isActive) {
+                    stroke = '#3b82f6';
+                    strokeWidth = 5;
+                } else if (isConfirmedTreeEdge) {
+                    stroke = '#10b981';
+                    strokeWidth = 5;
+                } else if (isPendingTreeEdge) {
+                    stroke = '#9ca3af';
+                    strokeWidth = 3.5;
+                    strokeDasharray = "5,5";
+                }
 
-        const isPendingTreeEdge = (isTreeEdgeUtoV && state.nodes[e.v].color === 'gray') ||
-        (isTreeEdgeVtoU && state.nodes[e.u].color === 'gray');
+                const n1 = nodesData.find(n => n.id === e.u);
+                const n2 = nodesData.find(n => n.id === e.v);
+                
+                svgContent += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}" stroke="${stroke}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDasharray}" stroke-linecap="round" />`;
+            });
 
-        const isActive = state.activeEdge && ((state.activeEdge.u === e.u && state.activeEdge.v === e.v) || (state.activeEdge.u === e.v && state.activeEdge.v === e.u));
+            // ציור קודקודים
+            nodesData.forEach(n => {
+                const nodeState = state.nodes[n.id];
+                let fill = '#ffffff';
+                let textColor = '#111827';
+                
+                if(nodeState.color === 'gray') { fill = '#d1d5db'; }
+                if(nodeState.color === 'black') { fill = '#374151'; textColor = '#ffffff'; }
 
-        let stroke = '#e5e7eb';
-        let strokeWidth = 2;
-        let strokeDasharray = "";
+                const isProcessing = state.processingNode === n.id;
+                const stroke = isProcessing ? '#3b82f6' : '#1f2937';
+                const strokeWidth = isProcessing ? 5 : 2;
 
-        if (isActive) {
-        stroke = '#3b82f6';
-        strokeWidth = 5;
-        } else if (isConfirmedTreeEdge) {
-        stroke = '#10b981';
-        strokeWidth = 5;
-        } else if (isPendingTreeEdge) {
-        stroke = '#9ca3af';
-        strokeWidth = 3.5;
-        strokeDasharray = "5,5";
-        }
+                svgContent += `<circle cx="${n.x}" cy="${n.y}" r="25" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
+                
+                const distText = nodeState.d === '∞' ? '∞' : nodeState.d;
+                const fontSize = nodeState.d === '∞' ? '26' : '18';
+                svgContent += `<text x="${n.x}" y="${nodeState.d === '∞' ? n.y - 2 : n.y + 1}" fill="${textColor}" font-size="${fontSize}" font-family="sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="central">${distText}</text>`;
+                
+                const labelY = n.pos === 'top' ? n.y - 40 : n.y + 40;
+                svgContent += `<text x="${n.x}" y="${labelY}" fill="#4b5563" font-size="20" font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="central">${n.id}</text>`;
+            });
 
-        const n1 = nodesData.find(n => n.id === e.u);
-        const n2 = nodesData.find(n => n.id === e.v);
+            svg.innerHTML = svgContent;
 
-        svgContent += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}" stroke="${stroke}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDasharray}" stroke-linecap="round" />`;
-        });
+            // 3. רינדור התור (Q)
+            const qContainer = document.getElementById('queue-container');
+            if (state.q.length === 0) {
+                qContainer.innerHTML = `<div class="text-gray-400 italic text-xs py-1 px-2">ריק</div>`;
+            } else {
+                let qHTML = '';
+                state.q.forEach(qItem => {
+                    const d = state.nodes[qItem].d;
+                    qHTML += `
+                        <div class="flex flex-col items-center queue-item">
+                            <div class="w-8 h-8 border border-gray-500 bg-gray-200 flex items-center justify-center text-xs font-serif italic text-gray-800 shadow-sm rounded">
+                                ${qItem}
+                            </div>
+                            <div class="text-[9px] font-bold text-gray-500 mt-0.5">${d}</div>
+                        </div>
+                    `;
+                });
+                qContainer.innerHTML = qHTML;
+            }
 
-        // ציור קודקודים
-        nodesData.forEach(n => {
-        const nodeState = state.nodes[n.id];
-        let fill = '#ffffff';
-        let textColor = '#111827';
+            // 4. רינדור מערך אבות (&pi;) ומרחקים (d) כטבלה מדעית בעלת 3 עמודות (ריווח קטן בהרבה)
+            const piContainer = document.getElementById('pi-array-container');
+            let piHTML = `
+                <table class="w-full text-center border-collapse text-sm bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold text-xs">
+                            <th class="py-1 px-2 border-r border-gray-200 font-serif italic">v</th>
+                            <th class="py-1 px-2 border-r border-gray-200 font-serif">d[v]</th>
+                            <th class="py-1 px-2 font-serif">&pi;[v]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            const sortedNodes = [...nodesData].sort((a, b) => a.id.localeCompare(b.id));
+            
+            sortedNodes.forEach(n => {
+                const piVal = state.nodes[n.id].pi;
+                const distVal = state.nodes[n.id].d;
+                const displayPi = piVal === 'NIL' ? '&empty;' : piVal;
+                const displayDist = distVal;
+                
+                // עיצוב שונה לקודקודים שכבר התגלו
+                const isDiscovered = distVal !== '∞';
+                const distClass = isDiscovered
+                    ? 'text-emerald-600 font-bold bg-emerald-50/50 rounded px-1.5'
+                    : 'text-gray-300';
+                    
+                const isParentAssigned = piVal !== 'NIL';
+                const piClass = isParentAssigned 
+                    ? 'text-blue-600 font-bold bg-blue-50/70 rounded px-1.5' 
+                    : 'text-gray-300';
 
-        if(nodeState.color === 'gray') { fill = '#d1d5db'; }
-        if(nodeState.color === 'black') { fill = '#374151'; textColor = '#ffffff'; }
+                piHTML += `
+                    <tr class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
+                        <td class="py-1 px-2 border-r border-gray-200 font-serif font-bold italic text-gray-700 text-xs">${n.id}</td>
+                        <td class="py-1 px-2 border-r border-gray-200 font-semibold ${distClass} text-xs">${displayDist}</td>
+                        <td class="py-1 px-2 font-semibold ${piClass} text-xs">${displayPi}</td>
+                    </tr>
+                `;
+            });
+            piHTML += `
+                    </tbody>
+                </table>
+            `;
+            piContainer.innerHTML = piHTML;
 
-        const isProcessing = state.processingNode === n.id;
-        const stroke = isProcessing ? '#3b82f6' : '#1f2937';
-        const strokeWidth = isProcessing ? 5 : 2;
+            // 5. רינדור קבוצות עץ ה-BFS (V_bfs, E_bfs)
+            let vBfs = [];
+            let eBfs = [];
+            
+            const sortedNodesForSet = [...nodesData].sort((a, b) => a.id.localeCompare(b.id));
+            
+            sortedNodesForSet.forEach(n => {
+                const nodeState = state.nodes[n.id];
+                if (nodeState.color === 'black') {
+                    vBfs.push(n.id);
+                    if (nodeState.pi !== 'NIL') {
+                        eBfs.push(`(${nodeState.pi}, ${n.id})`);
+                    }
+                }
+            });
 
-        svgContent += `<circle cx="${n.x}" cy="${n.y}" r="25" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />`;
-
-        const distText = nodeState.d === '∞' ? '∞' : nodeState.d;
-        const fontSize = nodeState.d === '∞' ? '26' : '18';
-        svgContent += `<text x="${n.x}" y="${nodeState.d === '∞' ? n.y - 2 : n.y + 1}" fill="${textColor}" font-size="${fontSize}" font-family="sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="central">${distText}</text>`;
-
-        const labelY = n.pos === 'top' ? n.y - 40 : n.y + 40;
-        svgContent += `<text x="${n.x}" y="${labelY}" fill="#4b5563" font-size="20" font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="central">${n.id}</text>`;
-        });
-
-        svg.innerHTML = svgContent;
-
-        // 3. רינדור התור (Q)
-        const qContainer = document.getElementById('queue-container');
-        if (state.q.length === 0) {
-        qContainer.innerHTML = `<div class="text-gray-400 italic text-xs py-1 px-2">ריק</div>`;
-        } else {
-        let qHTML = '';
-        state.q.forEach(qItem => {
-        const d = state.nodes[qItem].d;
-        qHTML += `
-        <div class="flex flex-col items-center queue-item">
-        <div class="w-8 h-8 border border-gray-500 bg-gray-200 flex items-center justify-center text-xs font-serif italic text-gray-800 shadow-sm rounded">
-        ${qItem}
-        </div>
-        <div class="text-[9px] font-bold text-gray-500 mt-0.5">${d}</div>
-        </div>
-        `;
-        });
-        qContainer.innerHTML = qHTML;
-        }
-
-        // 4. רינדור מערך אבות (&pi;) ומרחקים (d) כטבלה מדעית בעלת 3 עמודות
-        const piContainer = document.getElementById('pi-array-container');
-        let piHTML = `
-        <table class="w-full text-center border-collapse text-sm bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
-        <thead>
-        <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold text-xs">
-        <th class="py-1 px-2 border-r border-gray-200 font-serif italic">v</th>
-        <th class="py-1 px-2 border-r border-gray-200 font-serif">d[v]</th>
-        <th class="py-1 px-2 font-serif">&pi;[v]</th>
-        </tr>
-        </thead>
-        <tbody>
-        `;
-
-        const sortedNodes = [...nodesData].sort((a, b) => a.id.localeCompare(b.id));
-
-        sortedNodes.forEach(n => {
-        const piVal = state.nodes[n.id].pi;
-        const distVal = state.nodes[n.id].d;
-        const displayPi = piVal === 'NIL' ? '&empty;' : piVal;
-        const displayDist = distVal;
-
-        // עיצוב שונה לקודקודים שכבר התגלו
-        const isDiscovered = distVal !== '∞';
-        const distClass = isDiscovered
-        ? 'text-emerald-600 font-bold bg-emerald-50/50 rounded px-1.5'
-        : 'text-gray-300';
-
-        const isParentAssigned = piVal !== 'NIL';
-        const piClass = isParentAssigned
-        ? 'text-blue-600 font-bold bg-blue-50/70 rounded px-1.5'
-        : 'text-gray-300';
-
-        piHTML += `
-        <tr class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
-        <td class="py-1 px-2 border-r border-gray-200 font-serif font-bold italic text-gray-700 text-xs">${n.id}</td>
-        <td class="py-1 px-2 border-r border-gray-200 font-semibold ${distClass} text-xs">${displayDist}</td>
-        <td class="py-1 px-2 font-semibold ${piClass} text-xs">${displayPi}</td>
-        </tr>
-        `;
-        });
-        piHTML += `
-        </tbody>
-        </table>
-        `;
-        piContainer.innerHTML = piHTML;
-
-        // 5. רינדור קבוצות עץ ה-BFS (V_bfs, E_bfs)
-        let vBfs = [];
-        let eBfs = [];
-
-        const sortedNodesForSet = [...nodesData].sort((a, b) => a.id.localeCompare(b.id));
-
-        sortedNodesForSet.forEach(n => {
-        const nodeState = state.nodes[n.id];
-        if (nodeState.color === 'black') {
-        vBfs.push(n.id);
-        if (nodeState.pi !== 'NIL') {
-        eBfs.push(`(${nodeState.pi}, ${n.id})`);
-        }
-        }
-        });
-
-        document.getElementById('v-bfs-container').innerHTML = `V<sub>bfs</sub> = { ${vBfs.length > 0 ? vBfs.join(', ') : '&empty;'} }`;
-        document.getElementById('e-bfs-container').innerHTML = `E<sub>bfs</sub> = { ${eBfs.length > 0 ? eBfs.join(', ') : '&empty;'} }`;
+            document.getElementById('v-bfs-container').innerHTML = `V<sub>bfs</sub> = { ${vBfs.length > 0 ? vBfs.join(', ') : '&empty;'} }`;
+            document.getElementById('e-bfs-container').innerHTML = `E<sub>bfs</sub> = { ${eBfs.length > 0 ? eBfs.join(', ') : '&empty;'} }`;
         }
 
         // --- בקרת ניווט ואינטראקציה ---
         function nextStep() {
-        if (currentStep < states.length - 1) {
-        currentStep++;
-        render();
-        }
+            if (currentStep < states.length - 1) {
+                currentStep++;
+                render();
+            }
         }
 
         // ... המרת גבול אוילר ללמידה זמינה עבורך תמיד ...
         function prevStep() {
-        if (currentStep > 0) {
-        currentStep--;
-        render();
-        }
+            if (currentStep > 0) {
+                currentStep--;
+                render();
+            }
         }
 
+        // אתחול מחדש
         function resetSimulation() {
-        currentStep = 0;
-        render();
+            currentStep = 0;
+            render();
         }
 
         // מעבר עם מקשי החצים במקלדת
         document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') {
-        nextStep();
-        } else if (e.key === 'ArrowLeft') {
-        prevStep();
-        }
+            if (e.key === 'ArrowRight') {
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                prevStep();
+            }
         });
 
         // אתחול בטוח לכל פלטפורמה
@@ -418,8 +416,8 @@
         render();
 
         window.onload = () => {
-        generateBFSStates();
-        render();
+            generateBFSStates();
+            render();
         };
 
     </script>
