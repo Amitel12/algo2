@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #f9fafb; /* Tailwind gray-50 */
+            background-color: #f9fafb;
         }
         .algo-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -19,7 +19,6 @@
 </head>
 <body class="flex flex-col min-h-screen text-gray-800 font-sans">
 
-    <!-- סרגל עליון (Header) -->
     <header class="bg-white border-b border-gray-200 shadow-sm shrink-0">
         <div class="max-w-5xl mx-auto px-6 py-4 flex flex-row justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
@@ -37,19 +36,16 @@
         </div>
     </header>
 
-    <!-- האזור המרכזי -->
     <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col justify-center">
         
-        <!-- הודעת פתיחה קצרה -->
         <div class="text-center md:text-right mb-8">
             <h2 class="text-2xl font-extrabold text-gray-950">בחר אלגוריתם להמחשה</h2>
             <p class="text-sm text-gray-500 mt-1">כל הסימולציות מותאמות אישית לעבודה חלקה ומהירה בתוך האייפד</p>
         </div>
 
-        <!-- גריד כרטיסיות האלגוריתמים (רשת 2x2 מרווחת) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <!-- כרטיסיית BFS - פעילה ומקושרת -->
+            <!-- BFS -->
             <a href="bfs/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
@@ -59,15 +55,11 @@
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">Breadth-First Search</h3>
                 <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">חיפוש לרוחב (BFS)</p>
-                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                    סימולציה מלאה המציגה את ניהול התור (Q), עדכון מרחקי הצמתים (d) ועדכון מערך האבות (&pi;) בזמן אמת.
-                </p>
-                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
-                    פתח סימולציה &larr;
-                </div>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">סימולציה מלאה המציגה את ניהול התור (Q), עדכון מרחקי הצמתים (d) ועדכון מערך האבות (&pi;) בזמן אמת.</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">פתח סימולציה &larr;</div>
             </a>
 
-            <!-- כרטיסיית DFS - פעילה ומקושרת -->
+            <!-- DFS -->
             <a href="dfs/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
@@ -77,15 +69,11 @@
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">Depth-First Search</h3>
                 <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">חיפוש לעומק (DFS)</p>
-                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                    סימולציית מעבר לעומק, כולל זמני גילוי וסיום (Discovery & Finishing) ומחסנית רקורסיה (Stack) בזמן אמת.
-                </p>
-                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
-                    פתח סימולציה &larr;
-                </div>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">סימולציית מעבר לעומק, כולל זמני גילוי וסיום (Discovery & Finishing) ומחסנית רקורסיה (Stack) בזמן אמת.</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">פתח סימולציה &larr;</div>
             </a>
 
-            <!-- כרטיסיית דייקסטרה - פעילה ומקושרת -->
+            <!-- Dijkstra -->
             <a href="dijkstra/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
@@ -95,15 +83,11 @@
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">Dijkstra's Algorithm</h3>
                 <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">אלגוריתם דייקסטרה</p>
-                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                    מציאת המסלולים הקצרים ביותר בגרף ממושקל, תוך שימוש בתור עדיפויות (Priority Queue) המבוסס על ערכי d.
-                </p>
-                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
-                    פתח סימולציה &larr;
-                </div>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">מציאת המסלולים הקצרים ביותר בגרף ממושקל, תוך שימוש בתור עדיפויות (Priority Queue) המבוסס על ערכי d.</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">פתח סימולציה &larr;</div>
             </a>
 
-            <!-- כרטיסיית מיון טופולוגי - פעילה ומקושרת -->
+            <!-- Topological Sort -->
             <a href="topological-sort/index.html" class="algo-card block bg-white border border-gray-200 hover:border-blue-300 rounded-2xl p-6 shadow-sm hover:shadow-md relative overflow-hidden">
                 <div class="absolute top-4 left-4">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200">מוכן לשימוש</span>
@@ -113,17 +97,12 @@
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">Topological Sort</h3>
                 <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">מיון טופולוגי (Topo-Sort)</p>
-                <p class="text-gray-600 text-sm mt-3 leading-relaxed">
-                    יישור ליניארי של קודקודים בגרף מכוון ללא מעגלים (DAG) המבוסס על סדר זמני סיום יורד בריצת DFS אקדמית.
-                </p>
-                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">
-                    פתח סימולציה &larr;
-                </div>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">יישור ליניארי של קודקודים בגרף מכוון ללא מעגלים (DAG) המבוסס על סדר זמני סיום יורד בריצת DFS אקדמית.</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600">פתח סימולציה &larr;</div>
             </a>
 
         </div>
 
-        <!-- טיפ לשימוש ב-Notability בתחתית -->
         <div class="mt-12 bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-right">
             <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -132,10 +111,8 @@
                 <strong>טיפ להטמעה ב-Notability:</strong> העתק את הקישור הראשי של האתר שלך ב-Vercel. בתוך המחברת ב-Notability, הדבק את הקישור ובחר ב-<strong>Web Clip</strong>. לחץ לחיצה כפולה מהירה על הריבוע כדי להתחיל להשתמש בסימולציות ישירות בתוך המחברת!
             </div>
         </div>
-
     </main>
 
-    <!-- שוליים תחתונים -->
     <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-400 shrink-0">
         Interactive Algorithms Vault &copy; 2026
     </footer>
