@@ -20,7 +20,7 @@
                 <path d="M11.47 3.84a.75.75 0 011.06 0l8.99 9a.75.75 0 11-1.06 1.06l-1.03-1.03V20.25a1.5 1.5 0 01-1.5 1.5h-4.5v-5.625a1.125 1.125 0 00-1.125-1.125h-1.5a1.125 1.125 0 00-1.125 1.125V21.75h-4.5a1.5 1.5 0 01-1.5-1.5V12.87L2.53 13.9a.75.75 0 11-1.06-1.06l8.99-9z"/>
             </svg>
         </a>
-        <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה (קוד C)</h1>
+        <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה (קוד C מפושט)</h1>
     </div>
     
     <div class="flex items-center gap-2">
@@ -40,52 +40,59 @@
             <h3 class="font-bold text-xs mt-3 text-gray-800">סיבוכיות זמן:</h3>
             <ul class="text-xs list-disc pr-4 text-gray-700 space-y-1">
                 <li><strong>עם Min-Heap:</strong> O(E log V)</li>
-                <li><strong>עם מערך פשוט:</strong> O(V²)</li>
+                <li><strong>עם מטריצה (מערך פשוט):</strong> O(V²)</li>
             </ul>
         </div>
         
         <div class="bg-gray-900 p-4 rounded-xl shadow-inner flex-1 flex flex-col gap-1 overflow-y-auto" dir="ltr">
             <div id="code-0" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs">d[src] = 0; // all other d[i] = INT_MAX</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// אתחול מרחקים</span>
+                <span class="text-gray-100 font-mono text-xs">d[src] = 0;</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שאר המערך אתחול ל-INT_MAX</span>
             </div>
             <div id="code-1" class="code-line flex justify-between items-center rounded px-2 py-1 mt-2">
                 <span class="text-gray-100 font-mono text-xs">while (!isEmpty(Q)) {</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// כל עוד התור לא ריק</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// כל עוד יש צמתים שטרם טופלו</span>
             </div>
             <div id="code-2" class="code-line flex justify-between items-center rounded px-2 py-1">
                 <span class="text-gray-100 font-mono text-xs pl-4">int u = extractMin(Q, d);</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שליפת צומת עם מרחק מינימלי</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שליפת הקדקוד עם d מינימלי</span>
             </div>
             <div id="code-3" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-4">for (Edge* e = adj[u]; e != NULL; e = e->next) {</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// מעבר על הרשימה המקושרת</span>
+                <span class="text-gray-100 font-mono text-xs pl-4">for (int v = 0; v < V; v++) {</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// עוברים על כל הקדקודים בגרף</span>
             </div>
             <div id="code-4" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-400 font-mono text-xs pl-8">int v = e->dest, w = e->weight;</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// חילוץ נתוני השכן</span>
+                <span class="text-gray-100 font-mono text-xs pl-8">int w = graph[u][v];</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// בדיקת משקל הצלע מהמטריצה</span>
             </div>
             <div id="code-5" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-8">if (d[u] != INT_MAX && d[v] > d[u] + w) {</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// הגנה מ-Overflow ובדיקת שיפור</span>
+                <span class="text-gray-100 font-mono text-xs pl-8">if (w > 0 && d[u] != INT_MAX) {</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// יש צלע ויש לנו מסלול אל u</span>
             </div>
-            <div id="code-6" class="code-line flex flex-col justify-center rounded px-2 py-1">
+            <div id="code-6" class="code-line flex justify-between items-center rounded px-2 py-1">
+                <span class="text-gray-100 font-mono text-xs pl-12">if (d[v] > d[u] + w) {</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// בדיקת הקלה (Relaxation)</span>
+            </div>
+            <div id="code-7" class="code-line flex flex-col justify-center rounded px-2 py-1">
                 <div class="flex justify-between items-center w-full">
-                    <span class="text-gray-100 font-mono text-xs pl-12">d[v] = d[u] + w;</span>
-                    <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// עדכון מרחק</span>
+                    <span class="text-gray-100 font-mono text-xs pl-16">d[v] = d[u] + w;</span>
+                    <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// עדכון מרחק חדש וקצר יותר</span>
                 </div>
                 <div class="flex justify-between items-center w-full mt-1">
-                    <span class="text-gray-100 font-mono text-xs pl-12">pi[v] = u;</span>
-                    <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שמירת אב</span>
+                    <span class="text-gray-100 font-mono text-xs pl-16">pi[v] = u;</span>
+                    <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שמירת אב למסלול</span>
                 </div>
             </div>
             <div id="code-8" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-8">}</span>
+                <span class="text-gray-100 font-mono text-xs pl-12">}</span>
             </div>
             <div id="code-9" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-4">}</span>
+                <span class="text-gray-100 font-mono text-xs pl-8">}</span>
             </div>
             <div id="code-10" class="code-line flex justify-between items-center rounded px-2 py-1">
+                <span class="text-gray-100 font-mono text-xs pl-4">}</span>
+            </div>
+            <div id="code-11" class="code-line flex justify-between items-center rounded px-2 py-1">
                 <span class="text-gray-100 font-mono text-xs">}</span>
             </div>
         </div>
@@ -175,15 +182,13 @@
         states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 0, msg: "אתחול: המרחק למקור (A) מוגדר כ-0, ולכל השאר אינסוף (INT_MAX)."}));
 
         while(Q.length > 0) {
-            states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 1, msg: "בודק האם תור העדיפויות ריק."}));
+            states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 1, msg: "בודק האם תור העדיפויות Q אינו ריק."}));
             
             Q.sort((a, b) => d[a] - d[b]);
             let u = Q.shift();
             S.add(u);
 
-            states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 2, msg: `שולף את הצומת '${u}' בעל המרחק המינימלי (${d[u] === Infinity ? '∞' : d[u]}) מתור העדיפויות ומצרף אותו ל-S.`}));
-
-            states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 3, msg: `מתחיל לעבור על הרשימה המקושרת של השכנים של הקדקוד '${u}'.`}));
+            states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 2, msg: `שולף את הצומת u='${u}' בעל המרחק המינימלי (${d[u] === Infinity ? '∞' : d[u]}) מתוך Q ומצרף אותו ל-S.`}));
 
             for(let edge of adjList[u]) {
                 let v = edge.v;
@@ -191,22 +196,26 @@
 
                 if(S.has(v)) continue;
 
-                states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 4, msg: `מחלץ מתוך המצביע e את השכן v='${v}' ואת המשקל w=${w}.`}));
+                states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 3, msg: `לולאה: מתחיל לבדוק את הקדקוד v='${v}'.`}));
+                
+                states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 4, msg: `מחלץ את משקל הצלע (w) מהמטריצה בין u='${u}' ל-v='${v}'. המשקל הוא ${w}.`}));
+                
+                states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 5, msg: `האם קיימת צלע (w>0) והגענו ל-u (אינו אינסוף)? כן.`}));
 
                 if (d[v] > d[u] + w) {
-                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 5, msg: `בודק: האם ${d[v] === Infinity ? '∞' : d[v]} גדול מ-${d[u]} + ${w}? כן!`}));
+                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 6, msg: `הקלה: האם המרחק הידוע ל-v (${d[v] === Infinity ? '∞' : d[v]}) גדול מהמרחק ל-u ועוד הצלע (${d[u]} + ${w})? כן!`}));
                     
                     d[v] = d[u] + w;
                     pi[v] = u;
                     
-                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 6, msg: `מבצע הקלה (Relaxation): עדכון המרחק של '${v}' ל-${d[v]} ושמירת '${u}' כאבא.`}));
+                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 7, msg: `עדכון! שומרים את המרחק החדש ל-v שערכו ${d[v]}, והצומת '${u}' נשמר בתור אבא.`}));
                 } else {
-                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 5, msg: `בודק: האם ${d[v] === Infinity ? '∞' : d[v]} גדול מ-${d[u]} + ${w}? לא. אין עדכון.`}));
+                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 6, msg: `הקלה: האם ${d[v] === Infinity ? '∞' : d[v]} גדול מ-${d[u]} + ${w}? לא. אין מה לעדכן.`}));
                 }
             }
         }
         
-        states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 10, msg: "התור ריק. האלגוריתם סיים את ריצתו! מצאנו את כל המסלולים הקצרים ביותר מ-A."}));
+        states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 11, msg: "תור העדיפויות ריק (סיימנו לעבור על כל הצמתים). מסלולי דייקסטרה חושבו במלואם!"}));
     }
 
     function render() {
