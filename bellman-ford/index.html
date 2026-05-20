@@ -16,7 +16,9 @@
 <div class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center z-10 shrink-0 shadow-sm">
     <div class="flex items-center gap-4">
         <a href="../index.html" class="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm flex items-center justify-center" title="חזור לדף הבית">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M11.47 3.84a.75.75 0 011.06 0l8.99 9a.75.75 0 11-1.06 1.06l-1.03-1.03V20.25a1.5 1.5 0 01-1.5 1.5h-4.5v-5.625a1.125 1.125 0 00-1.125-1.125h-1.5a1.125 1.125 0 00-1.125 1.125V21.75h-4.5a1.5 1.5 0 01-1.5-1.5V12.87L2.53 13.9a.75.75 0 11-1.06-1.06l8.99-9z"/>
+            </svg>
         </a>
         <h1 class="text-xl font-bold text-purple-900">אלגוריתם Bellman-Ford</h1>
     </div>
@@ -105,6 +107,16 @@
 
     <div class="w-1/4 flex flex-col gap-4">
         <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex-1">
+            
+            <div class="bg-blue-50 p-3 rounded-lg text-xs text-gray-700 mb-4 border border-blue-100 shadow-sm">
+                <div class="font-bold text-blue-900 mb-1 border-b border-blue-200 pb-1">מקרא סימנים:</div>
+                <ul class="space-y-1 mt-1">
+                    <li><strong class="text-blue-600 font-mono text-sm">d</strong> - המרחק המינימלי מצומת המקור.</li>
+                    <li><strong class="text-gray-600 font-mono text-sm">π</strong> - אב (Pi): הצומת הקודם במסלול.</li>
+                    <li><strong class="text-red-500 font-mono text-sm">w</strong> - משקל הצלע: עלות המעבר.</li>
+                </ul>
+            </div>
+
             <div class="flex justify-between items-end border-b pb-2 mb-3">
                 <h3 class="font-bold text-gray-800 text-sm">מערך מרחקים (d)</h3>
                 <span id="iteration-counter" class="text-xs font-bold bg-purple-100 text-purple-800 px-2 py-1 rounded">איטרציה: 0 / 3</span>
@@ -261,6 +273,9 @@
             text.setAttribute('font-size', '13');
             text.setAttribute('font-weight', 'bold');
             text.setAttribute('fill', edge.w < 0 ? '#ef4444' : '#4b5563');
+            // הגדרה ספציפית לתיקון כיווניות של מינוסים
+            text.setAttribute('dir', 'ltr');
+            text.setAttribute('style', 'direction: ltr; unicode-bidi: embed;');
             text.textContent = edge.w;
             svg.appendChild(text);
         });
@@ -323,6 +338,9 @@
             distText.setAttribute('fill', '#2563eb');
             if (dist < 0) distText.setAttribute('fill', '#22c55e');
 
+            // הגדרה ספציפית לתיקון כיווניות של מינוסים בתוצאות
+            distText.setAttribute('dir', 'ltr');
+            distText.setAttribute('style', 'direction: ltr; unicode-bidi: embed;');
             distText.textContent = distTextVal;
             svg.appendChild(distText);
         });
@@ -352,7 +370,7 @@
             distancesHtml += `
                 <div class="flex justify-between items-center p-2 rounded border ${bgClass}">
                     <span class="font-bold w-6 text-center">${node}</span>
-                    <span class="text-gray-600">d: <span class="font-bold ${dVal < 0 ? 'text-green-600' : 'text-blue-600'}">${dVal}</span></span>
+                    <span class="text-gray-600" dir="ltr">d: <span class="font-bold ${dVal < 0 ? 'text-green-600' : 'text-blue-600'}">${dVal}</span></span>
                     <span class="text-gray-500 text-xs">π: ${piVal}</span>
                 </div>
             `;
