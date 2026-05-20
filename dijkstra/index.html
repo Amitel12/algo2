@@ -22,10 +22,11 @@
         </a>
         <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה</h1>
     </div>
-    <div class="flex items-center gap-3">
-        <button onclick="prevStep()" id="btn-prev" class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium text-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed">← הקודם</button>
-        <span id="step-counter" class="text-sm font-bold w-24 text-center bg-gray-50 py-2 rounded-lg border border-gray-200">צעד 0/0</span>
-        <button onclick="nextStep()" id="btn-next" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">הבא →</button>
+    
+    <div class="flex items-center gap-2">
+        <button onclick="prevStep()" id="btn-prev" class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium text-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed">הקודם</button>
+        <button onclick="nextStep()" id="btn-next" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">הבא</button>
+        <span id="step-counter" class="text-sm font-bold w-24 text-center bg-gray-50 py-2 rounded-lg border border-gray-200 ml-2">צעד 0/0</span>
         <button onclick="resetSimulation()" title="התחל מחדש" class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-gray-600 transition">🔄</button>
     </div>
 </div>
@@ -96,8 +97,8 @@
         </div>
     </div>
 
-    <div class="w-1/4 flex flex-col gap-4">
-        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex-1">
+    <div class="w-1/4 flex flex-col gap-4 overflow-y-auto">
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex-none">
             
             <div class="bg-blue-50 p-3 rounded-lg text-xs text-gray-700 mb-4 border border-blue-100 shadow-sm">
                 <div class="font-bold text-blue-900 mb-1 border-b border-blue-200 pb-1">מקרא סימנים:</div>
@@ -105,16 +106,22 @@
                     <li><strong class="text-blue-600 font-mono text-sm">d</strong> - המרחק המינימלי מצומת המקור.</li>
                     <li><strong class="text-gray-600 font-mono text-sm">π</strong> - אב (Pi): הצומת הקודם במסלול.</li>
                     <li><strong class="text-emerald-600 font-mono text-sm">S</strong> - קבוצת הצמתים שטופלו סופית.</li>
-                    <li><strong class="text-gray-500 font-mono text-sm">w</strong> - משקל הצלע.</li>
+                    <li><strong class="text-gray-500 font-mono text-sm">w</strong> - משקל הצלע (מוצג על החצים).</li>
                 </ul>
             </div>
 
             <h3 class="font-bold text-gray-800 text-sm mb-3 border-b pb-2">מערך מרחקים (d)</h3>
             <div id="distances-container" class="space-y-2 text-sm"></div>
         </div>
-        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-sm flex-1">
+        
+        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-sm flex-none">
             <h3 class="font-bold text-emerald-800 text-sm mb-3 border-b border-emerald-200 pb-2">קבוצת צמתים שטופלו (S)</h3>
             <div id="s-set-container" class="text-sm text-emerald-900 font-mono bg-white p-2 rounded border border-emerald-100 min-h-[40px] flex items-center" dir="ltr"></div>
+        </div>
+
+        <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 shadow-sm flex-none">
+            <h3 class="font-bold text-purple-800 text-sm mb-3 border-b border-purple-200 pb-2">הצלעות במסלול (העץ שנוצר)</h3>
+            <div id="edges-tree-container" class="text-sm text-purple-900 font-mono bg-white p-2 rounded border border-purple-100 min-h-[40px] flex items-center" dir="ltr"></div>
         </div>
     </div>
 </div>
@@ -243,15 +250,14 @@
             line.setAttribute('stroke-width', strokeWidth);
             svg.appendChild(line);
 
-            // טקסט למשקל הצלע
+            // טקסט למשקל הצלע - הורחב כדי להכיל את ה-w=
             const midX = (uNode.x + vNode.x) / 2;
             const midY = (uNode.y + vNode.y) / 2;
             
-            // רקע לבן קטן למשקל כדי שיהיה קריא
             const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('x', midX - 8);
+            rect.setAttribute('x', midX - 22);
             rect.setAttribute('y', midY - 10);
-            rect.setAttribute('width', 16);
+            rect.setAttribute('width', 44);
             rect.setAttribute('height', 16);
             rect.setAttribute('fill', 'white');
             rect.setAttribute('rx', 3);
@@ -266,7 +272,7 @@
             text.setAttribute('fill', '#4b5563');
             text.setAttribute('dir', 'ltr');
             text.setAttribute('style', 'direction: ltr; unicode-bidi: embed;');
-            text.textContent = edge.w;
+            text.textContent = 'w=' + edge.w; // נוסף w= כאן בבירור
             svg.appendChild(text);
         });
 
@@ -319,7 +325,6 @@
             const distTextVal = dist === Infinity ? '∞' : dist;
             const distText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             
-            // מיקום המרחק קצת שונה לכל צומת למניעת התנגשויות
             let dX = node.x;
             let dY = node.y - 25;
             if (node.id === 'A') { dX -= 25; dY += 5; }
@@ -331,7 +336,7 @@
             distText.setAttribute('text-anchor', 'middle');
             distText.setAttribute('font-size', '14');
             distText.setAttribute('font-weight', 'bold');
-            distText.setAttribute('fill', '#2563eb'); // כחול בולט למרחק
+            distText.setAttribute('fill', '#2563eb');
             distText.setAttribute('dir', 'ltr');
             distText.setAttribute('style', 'direction: ltr; unicode-bidi: embed;');
             distText.textContent = distTextVal;
@@ -366,6 +371,15 @@
         const sArray = Array.from(state.S);
         document.getElementById('s-set-container').innerHTML = sArray.length > 0 ? `{ ${sArray.join(', ')} }` : '{ }';
 
+        // עדכון תצוגת הצלעות שנוצרו בעץ ה-Shortest Paths
+        let treeEdges = [];
+        Object.keys(state.pi).forEach(node => {
+            if (state.pi[node]) {
+                treeEdges.push(`${state.pi[node]}➔${node}`);
+            }
+        });
+        document.getElementById('edges-tree-container').innerHTML = treeEdges.length > 0 ? `{ ${treeEdges.join(', ')} }` : '{ }';
+
         // הדגשת שורת קוד
         document.querySelectorAll('.code-line').forEach(el => el.classList.remove('highlight-line'));
         const activeLineEl = document.getElementById(`code-${state.activeLine}`);
@@ -376,26 +390,10 @@
     }
 
     // פעולות ניווט
-    function nextStep() {
-        if(currentStep < states.length - 1) {
-            currentStep++;
-            render();
-        }
-    }
+    function nextStep() { if(currentStep < states.length - 1) { currentStep++; render(); } }
+    function prevStep() { if(currentStep > 0) { currentStep--; render(); } }
+    function resetSimulation() { currentStep = 0; render(); }
 
-    function prevStep() {
-        if(currentStep > 0) {
-            currentStep--;
-            render();
-        }
-    }
-
-    function resetSimulation() {
-        currentStep = 0;
-        render();
-    }
-
-    // הפעלה ראשונית
     generateDijkstraStates();
     render();
 </script>
