@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,38 +35,34 @@
 </head>
 <body class="flex flex-col h-screen font-sans text-gray-800">
 
-    <!-- סרגל כותרת ולחצני שליטה עם onclick ישיר שעובד תמיד -->
-    <div class="relative bg-white shadow-sm border-b border-gray-200 px-4 py-3 flex flex-row justify-between items-center z-10 shrink-0">
-        <div>
-            <h1 class="text-xl font-bold text-gray-800 tracking-tight">Breadth-First Search (BFS)</h1>
-            <p class="text-xs text-gray-500">Step-by-step CLRS simulation</p>
+    <div class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center z-10 shrink-0 shadow-sm">
+        <div class="flex items-center gap-4">
+            <a href="../index.html" class="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm flex items-center justify-center" title="חזור לדף הבית">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M11.47 3.84a.75.75 0 011.06 0l8.99 9a.75.75 0 11-1.06 1.06l-1.03-1.03V20.25a1.5 1.5 0 01-1.5 1.5h-4.5v-5.625a1.125 1.125 0 00-1.125-1.125h-1.5a1.125 1.125 0 00-1.125 1.125V21.75h-4.5a1.5 1.5 0 01-1.5-1.5V12.87L2.53 13.9a.75.75 0 11-1.06-1.06l8.99-9z"/>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-xl font-bold text-gray-800 tracking-tight">Breadth-First Search (BFS)</h1>
+                <p class="text-xs text-gray-500 mt-0.5">סימולציה שלב-אחר-שלב (CLRS)</p>
+            </div>
         </div>
         
-        <div class="flex items-center space-x-2">
-            <button onclick="prevStep()" id="btn-prev" class="cursor-pointer px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                &larr; הקודם
-            </button>
-            <span id="step-counter" class="text-xs font-semibold w-16 text-center text-gray-600">צעד 0/0</span>
-            <button onclick="nextStep()" id="btn-next" class="cursor-pointer px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                הבא &rarr;
-            </button>
-            <button onclick="resetSimulation()" id="btn-reset" class="cursor-pointer p-1.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-600 rounded-lg transition-colors" title="אתחול מחדש">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            </button>
+        <div class="flex items-center gap-2">
+            <button onclick="prevStep()" id="btn-prev" class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium text-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed">הקודם</button>
+            <button onclick="nextStep()" id="btn-next" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">הבא</button>
+            <span id="step-counter" class="text-sm font-bold w-24 text-center bg-gray-50 py-2 rounded-lg border border-gray-200 ml-2">צעד 0/0</span>
+            <button onclick="resetSimulation()" title="התחל מחדש" class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-gray-600 transition">🔄</button>
         </div>
     </div>
 
-    <!-- שורת הודעות והסבר על הצעד הנוכחי -->
-    <div class="bg-blue-50 border-b border-blue-100 px-4 py-2 shrink-0">
-        <p id="status-message" class="text-blue-800 font-medium text-center md:text-left text-sm md:text-base"></p>
+    <div class="bg-blue-50 border-b border-blue-100 px-4 py-3 shrink-0 flex items-center justify-center min-h-[48px]">
+        <p id="status-message" class="text-blue-900 font-bold text-center text-sm md:text-base transition-colors"></p>
     </div>
 
-    <!-- האזור המרכזי בעיצוב מחולק לשמאל וימין -->
     <div class="flex-1 flex flex-col md:flex-row p-4 gap-4 min-h-0 overflow-hidden">
         
-        <!-- פאנל שמאלי (3/4 רוחב): גרף מלא (סופר מרווח ונקי) -->
-        <div class="flex-1 md:w-3/4 flex flex-col min-h-0">
-            <!-- אזור הגרף -->
+        <div class="flex-1 md:w-3/4 flex flex-col min-h-0 relative">
             <div class="flex-1 bg-white border border-gray-200 rounded-xl p-2 flex items-center justify-center min-h-0 shadow-sm relative">
                 <div id="graph-container">
                     <svg id="graph-svg" viewBox="0 0 650 350" preserveAspectRatio="xMidYMid meet"></svg>
@@ -74,30 +70,25 @@
             </div>
         </div>
 
-        <!-- פאנל ימני (1/4 רוחב): מערכי מרחק ואבות, תור Q, ועץ T_bfs מתחתיהם (קומפקטי ומיושר למעלה) -->
-        <div class="md:w-1/4 flex flex-col space-y-3 min-h-0 shrink-0 justify-start overflow-y-auto pr-1">
-            <!-- אזור טבלת האבות והמרחקים -->
+        <div class="md:w-1/4 flex flex-col space-y-3 min-h-0 shrink-0 justify-start overflow-y-auto pl-1">
+            
             <div class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col shadow-sm shrink-0">
-                <span class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider text-center shrink-0" dir="rtl">מרחקים (d) ואבות (&pi;)</span>
+                <span class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider text-center shrink-0">מרחקים (d) ואבות (&pi;)</span>
                 <div id="pi-array-container" class="w-full mt-1 shrink-0">
-                    <!-- הטבלה המוזרקת כאן -->
-                </div>
-            </div>
-
-            <!-- תצוגת התור (Q) - צמודה וקומפקטית -->
-            <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0">
-                <span class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider text-center">Q (Queue)</span>
-                <div class="flex items-center justify-center gap-2">
-                    <span class="text-lg italic font-serif text-gray-300">Q</span>
-                    <div id="queue-container" class="flex flex-wrap gap-1.5 items-center justify-center">
-                        <!-- איברי התור יוזרקו כאן -->
                     </div>
+            </div>
+
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0">
+                <span class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider text-center">תור (Queue)</span>
+                <div class="flex items-center justify-center gap-3" dir="ltr">
+                    <span class="text-lg italic font-serif text-gray-400 font-bold">Q</span>
+                    <div id="queue-container" class="flex gap-1.5 items-center justify-start border-l-2 border-r-2 border-gray-300 px-2 min-h-[40px] w-full overflow-x-auto">
+                        </div>
                 </div>
             </div>
 
-            <!-- קבוצות עץ ה-BFS הפורמליות (T_bfs) - ממוקם כעת בצד ימין מתחת לתור Q -->
-            <div class="bg-emerald-50 border border-emerald-100 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0" dir="rtl">
-                <span class="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wider text-center">עץ BFS (T<sub>bfs</sub>) לפי ההגדרה</span>
+            <div class="bg-emerald-50 border border-emerald-100 shadow-sm rounded-xl p-3 flex flex-col justify-center shrink-0">
+                <span class="text-xs font-bold text-emerald-800 mb-2 uppercase tracking-wider text-center">עץ BFS (T<sub dir="ltr">bfs</sub>) לפי ההגדרה</span>
                 <div class="flex flex-col gap-2 text-xs font-serif text-emerald-900" dir="ltr">
                     <div id="v-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1.5 rounded border border-emerald-200/50 truncate">V<sub>bfs</sub> = &empty;</div>
                     <div id="e-bfs-container" class="font-semibold bg-white/60 px-2.5 py-1.5 rounded border border-emerald-200/50 break-words">E<sub>bfs</sub> = &empty;</div>
@@ -142,7 +133,7 @@
 
         let states = [];
         
-        // יצירת כלל מצבי הסימולציה מראש למעבר חלק
+        // יצירת כלל מצבי הסימולציה מראש למעבר חלק (עברית ואנגלית משולבים נכון תחת LTR)
         function generateBFSStates() {
             states = [];
             let currentState = {
@@ -151,7 +142,7 @@
                 treeEdges: [],
                 activeEdge: null,
                 processingNode: null,
-                msg: "מצב התחלתי: כל הקודקודים טרם נתגלו (לבנים) עם מרחק ∞."
+                msg: `מצב התחלתי: כל הקודקודים טרם נתגלו (לבנים) עם מרחק <span dir="ltr" class="font-bold mx-0.5">∞</span>.`
             };
 
             nodesData.forEach(n => {
@@ -168,7 +159,7 @@
             currentState.nodes['s'].color = 'gray';
             currentState.nodes['s'].d = 0;
             currentState.q.push('s');
-            pushState("מתחילים את ריצת ה-BFS מקודקוד המקור s. צובעים באפור, מרחק 0, ומכניסים לתור.");
+            pushState(`מתחילים את ריצת ה-<span dir="ltr" class="font-bold mx-0.5">BFS</span> מקודקוד המקור <span dir="ltr" class="font-bold text-blue-700 mx-0.5">s</span>. צובעים באפור, מרחק <span dir="ltr" class="font-bold mx-0.5">0</span>, ומכניסים לתור (<span dir="ltr">Enqueue</span>).`);
 
             let q = ['s'];
             let d = {s: 0};
@@ -178,50 +169,49 @@
             while(q.length > 0) {
                 let u = q[0];
                 currentState.processingNode = u;
-                pushState(`קודקוד '${u}' בראש התור. נבחן את השכנים שלו.`);
+                pushState(`קודקוד <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${u}</span> בראש התור. נבחן את השכנים שלו.`);
 
                 q.shift();
                 currentState.q = [...q];
-                pushState(`מוציאים את '${u}' מהתור (Dequeue).`);
+                pushState(`מוציאים את <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${u}</span> מהתור (<span dir="ltr">Dequeue</span>).`);
 
                 for(let v of adjList[u]) {
                     currentState.activeEdge = {u, v};
-                    pushState(`בודקים את השכן '${v}' של הקודקוד '${u}'.`);
+                    pushState(`בודקים את השכן <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${v}</span> של הקודקוד <span dir="ltr" class="font-bold text-gray-700 mx-0.5">${u}</span>.`);
 
                     if(color[v] === 'white') {
                         color[v] = 'gray';
                         d[v] = d[u] + 1;
                         currentState.nodes[v] = {color: 'gray', d: d[v], pi: u};
                         currentState.treeEdges.push({u, v});
-                        pushState("השכן '" + v + "' לבן (טרם נתגלה). נצבע באפור, נעדכן אבא ל-'" + u + "', מרחק ל-" + d[v] + ", ונסמן את הקשת.");
+                        pushState(`השכן <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${v}</span> לבן (טרם נתגלה). נצבע באפור, נעדכן אבא ל-<span dir="ltr" class="font-bold mx-0.5">${u}</span>, מרחק ל-<span dir="ltr" class="font-bold mx-0.5">${d[v]}</span>, ונסמן את הקשת כחלק מהעץ.`);
 
                         q.push(v);
                         currentState.q = [...q];
-                        pushState(`מכניסים את '${v}' לתור (Enqueue).`);
+                        pushState(`מכניסים את <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${v}</span> לתור (<span dir="ltr">Enqueue</span>).`);
                     } else {
-                        pushState(`השכן '${v}' כבר נתגלה (צבעו ${color[v] === 'gray' ? 'אפור' : 'שחור'}). נדלג עליו.`);
+                        pushState(`השכן <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${v}</span> כבר נתגלה (צבעו ${color[v] === 'gray' ? 'אפור' : 'שחור'}). נדלג עליו.`);
                     }
                     currentState.activeEdge = null;
                 }
                 color[u] = 'black';
                 currentState.nodes[u].color = 'black';
                 currentState.processingNode = null;
-                pushState(`סיימנו לבדוק את כל השכנים של '${u}'. נצבע אותו בשחור.`);
+                pushState(`סיימנו לבדוק את כל השכנים של <span dir="ltr" class="font-bold text-blue-700 mx-0.5">${u}</span>. נצבע אותו בשחור.`);
             }
             
             currentState.processingNode = null;
             currentState.activeEdge = null;
-            pushState("התור ריק. אלגוריתם ה-BFS הסתיים בהצלחה!");
+            pushState(`התור ריק. אלגוריתם ה-<span dir="ltr" class="font-bold mx-0.5">BFS</span> הסתיים בהצלחה!`);
         }
 
         let currentStep = 0;
 
-        // פונקציית הרינדור הראשית של הממשק
         function render() {
             const state = states[currentStep];
             
             // 1. עדכון טקסטים וכפתורים
-            document.getElementById('status-message').innerText = state.msg;
+            document.getElementById('status-message').innerHTML = state.msg;
             document.getElementById('step-counter').innerText = `צעד ${currentStep} / ${states.length - 1}`;
             document.getElementById('btn-prev').disabled = currentStep === 0;
             document.getElementById('btn-next').disabled = currentStep === states.length - 1;
@@ -230,7 +220,6 @@
             const svg = document.getElementById('graph-svg');
             let svgContent = '';
 
-            // ציור קשתות הגרף
             edgesData.forEach(e => {
                 const piU = state.nodes[e.u].pi;
                 const piV = state.nodes[e.v].pi;
@@ -268,7 +257,6 @@
                 svgContent += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}" stroke="${stroke}" stroke-width="${strokeWidth}" stroke-dasharray="${strokeDasharray}" stroke-linecap="round" />`;
             });
 
-            // ציור קודקודים
             nodesData.forEach(n => {
                 const nodeState = state.nodes[n.id];
                 let fill = '#ffffff';
@@ -285,40 +273,41 @@
                 
                 const distText = nodeState.d === '∞' ? '∞' : nodeState.d;
                 const fontSize = nodeState.d === '∞' ? '26' : '18';
-                svgContent += `<text x="${n.x}" y="${nodeState.d === '∞' ? n.y - 2 : n.y + 1}" fill="${textColor}" font-size="${fontSize}" font-family="sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="central">${distText}</text>`;
+                // שימוש ב dir=ltr במספרים כדי להגן מפני היפוכי עברית
+                svgContent += `<text x="${n.x}" y="${nodeState.d === '∞' ? n.y - 2 : n.y + 1}" fill="${textColor}" font-size="${fontSize}" font-family="sans-serif" font-weight="600" text-anchor="middle" dominant-baseline="central" dir="ltr">${distText}</text>`;
                 
                 const labelY = n.pos === 'top' ? n.y - 40 : n.y + 40;
-                svgContent += `<text x="${n.x}" y="${labelY}" fill="#4b5563" font-size="20" font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="central">${n.id}</text>`;
+                svgContent += `<text x="${n.x}" y="${labelY}" fill="#4b5563" font-size="20" font-family="serif" font-style="italic" text-anchor="middle" dominant-baseline="central" dir="ltr">${n.id}</text>`;
             });
 
             svg.innerHTML = svgContent;
 
-            // 3. רינדור התור (Q)
+            // 3. רינדור התור (Q) בתצורה לרוחב (אופקי) תחת LTR
             const qContainer = document.getElementById('queue-container');
             if (state.q.length === 0) {
-                qContainer.innerHTML = `<div class="text-gray-400 italic text-xs py-1 px-2">ריק</div>`;
+                qContainer.innerHTML = `<div class="text-gray-400 italic text-xs py-1 px-2 text-center w-full">ריק</div>`;
             } else {
                 let qHTML = '';
                 state.q.forEach(qItem => {
                     const d = state.nodes[qItem].d;
                     qHTML += `
-                        <div class="flex flex-col items-center queue-item">
-                            <div class="w-8 h-8 border border-gray-500 bg-gray-200 flex items-center justify-center text-xs font-serif italic text-gray-800 shadow-sm rounded">
+                        <div class="flex flex-col items-center queue-item shrink-0">
+                            <div class="w-8 h-8 border border-gray-400 bg-gray-100 flex items-center justify-center text-xs font-serif italic font-bold text-gray-800 shadow-sm rounded">
                                 ${qItem}
                             </div>
-                            <div class="text-[9px] font-bold text-gray-500 mt-0.5">${d}</div>
+                            <div class="text-[9px] font-bold text-gray-500 mt-0.5">d=${d}</div>
                         </div>
                     `;
                 });
                 qContainer.innerHTML = qHTML;
             }
 
-            // 4. רינדור מערך אבות (&pi;) ומרחקים (d) כטבלה מדעית בעלת 3 עמודות (ריווח קטן בהרבה)
+            // 4. רינדור טבלת האבות והמרחקים 
             const piContainer = document.getElementById('pi-array-container');
             let piHTML = `
                 <table class="w-full text-center border-collapse text-sm bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
                     <thead>
-                        <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold text-xs">
+                        <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold text-xs" dir="ltr">
                             <th class="py-1 px-2 border-r border-gray-200 font-serif italic">v</th>
                             <th class="py-1 px-2 border-r border-gray-200 font-serif">d[v]</th>
                             <th class="py-1 px-2 font-serif">&pi;[v]</th>
@@ -335,7 +324,6 @@
                 const displayPi = piVal === 'NIL' ? '&empty;' : piVal;
                 const displayDist = distVal;
                 
-                // עיצוב שונה לקודקודים שכבר התגלו
                 const isDiscovered = distVal !== '∞';
                 const distClass = isDiscovered
                     ? 'text-emerald-600 font-bold bg-emerald-50/50 rounded px-1.5'
@@ -347,7 +335,7 @@
                     : 'text-gray-300';
 
                 piHTML += `
-                    <tr class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
+                    <tr class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors" dir="ltr">
                         <td class="py-1 px-2 border-r border-gray-200 font-serif font-bold italic text-gray-700 text-xs">${n.id}</td>
                         <td class="py-1 px-2 border-r border-gray-200 font-semibold ${distClass} text-xs">${displayDist}</td>
                         <td class="py-1 px-2 font-semibold ${piClass} text-xs">${displayPi}</td>
@@ -360,7 +348,7 @@
             `;
             piContainer.innerHTML = piHTML;
 
-            // 5. רינדור קבוצות עץ ה-BFS (V_bfs, E_bfs)
+            // 5. רינדור קבוצות עץ ה-BFS
             let vBfs = [];
             let eBfs = [];
             
@@ -388,7 +376,6 @@
             }
         }
 
-        // ... המרת גבול אוילר ללמידה זמינה עבורך תמיד ...
         function prevStep() {
             if (currentStep > 0) {
                 currentStep--;
@@ -396,24 +383,19 @@
             }
         }
 
-        // אתחול מחדש
         function resetSimulation() {
             currentStep = 0;
             render();
         }
 
-        // מעבר עם מקשי החצים במקלדת
+        // מקשים מותאמים ל-RTL: חץ שמאלה מקדם, חץ ימינה מחזיר אחורה
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') {
+            if (e.key === 'ArrowLeft') {
                 nextStep();
-            } else if (e.key === 'ArrowLeft') {
+            } else if (e.key === 'ArrowRight') {
                 prevStep();
             }
         });
-
-        // אתחול בטוח לכל פלטפורמה
-        generateBFSStates();
-        render();
 
         window.onload = () => {
             generateBFSStates();
