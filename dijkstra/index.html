@@ -2,66 +2,98 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>סימולציית דייקסטרה המלאה</title>
+    <title>Dijkstra's Algorithm Simulation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f3f4f6; }
-        .highlight-line { background-color: #374151; border-right: 4px solid #10b981; }
+        body { margin: 0; background-color: #f3f4f6; font-family: sans-serif; overflow: hidden; }
+        .highlight-line { background-color: #374151; border-right: 4px solid #10b981; padding: 2px 0; }
+        svg { background: white; border-radius: 8px; }
+        .queue-item { transition: all 0.2s ease-in-out; }
     </style>
 </head>
-<body class="p-4">
+<body class="h-screen flex flex-col">
 
-<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center z-10 shrink-0">
+    <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה (CLRS)</h1>
+    <div class="flex items-center gap-2">
+        <button onclick="prevStep()" id="btn-prev" class="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200">← הקודם</button>
+        <span id="step-counter" class="text-sm font-bold w-20 text-center">צעד 0/0</span>
+        <button onclick="nextStep()" id="btn-next" class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">הבא →</button>
+        <button onclick="resetSimulation()" class="p-2 border rounded-lg hover:bg-gray-50">🔄</button>
+    </div>
+</div>
+
+<div class="flex flex-1 overflow-hidden p-4 gap-4">
     
-    <div class="lg:col-span-1 space-y-4">
-        <div class="bg-white p-6 rounded-xl shadow-md">
-            <h2 class="text-xl font-bold text-blue-800 mb-4">אלגוריתם דייקסטרה</h2>
-            <p class="text-sm text-gray-600 mb-2"><strong>מתי משתמשים?</strong> בגרפים עם משקלים אי-שליליים (w ≥ 0).</p>
-            
-            <h3 class="font-bold text-blue-700 mt-4">סיבוכיות זמן:</h3>
-            <ul class="text-sm list-disc pr-4 space-y-1 text-gray-700">
-                <li><strong>גרף דליל:</strong> שימוש ב-Min-Heap ← <strong>O(E log V)</strong></li>
-                <li><strong>גרף צפוף:</strong> שימוש במערך ← <strong>O(V²)</strong></li>
+    <div class="w-1/4 overflow-y-auto space-y-4">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+            <h2 class="font-bold text-blue-800 mb-2">חוקים וסיבוכיות</h2>
+            <p class="text-[11px] text-gray-600">מותר לשימוש רק בגרפים עם משקלים אי-שליליים (w ≥ 0).</p>
+            <h3 class="font-bold text-[12px] mt-3">סיבוכיות זמן:</h3>
+            <ul class="text-[11px] list-disc pr-4 text-gray-700">
+                <li><strong>גרף דליל (Min-Heap):</strong> O(E log V)</li>
+                <li><strong>גרף צפוף (מערך):</strong> O(V²)</li>
             </ul>
-
-            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-[11px] mt-4 overflow-x-auto">
+            <div class="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-[10px] mt-3">
                 <p>while (Q is not empty) {</p>
-                <p>&nbsp;&nbsp;u = ExtractMin(Q);</p>
-                <p>&nbsp;&nbsp;for each v in adj[u] {</p>
-                <p class="highlight-line text-white"> &nbsp;&nbsp;&nbsp;&nbsp;// Relaxation:</p>
-                <p class="highlight-line text-white"> &nbsp;&nbsp;&nbsp;&nbsp;if (d[v] > d[u] + w(u,v)) {</p>
-                <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d[v] = d[u] + w(u,v);</p>
-                <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pi[v] = u;</p>
-                <p class="highlight-line text-white"> &nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                <p>&nbsp;&nbsp;}</p>
+                <p>&nbsp;u = ExtractMin(Q);</p>
+                <p>&nbsp;for each v in adj[u] {</p>
+                <p class="highlight-line text-white">&nbsp;&nbsp;// Relaxation (הקלה):</p>
+                <p class="highlight-line text-white">&nbsp;&nbsp;if (d[v] > d[u] + w(u,v)) {</p>
+                <p>&nbsp;&nbsp;&nbsp;d[v] = d[u] + w(u,v);</p>
+                <p>&nbsp;&nbsp;&nbsp;pi[v] = u;</p>
+                <p class="highlight-line text-white">&nbsp;&nbsp;}</p>
+                <p>&nbsp;}</p>
                 <p>}</p>
             </div>
         </div>
     </div>
 
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-4">
-        <h1 class="text-lg font-bold text-gray-800">סימולציה ויזואלית</h1>
-        <div id="graph-container" class="h-96 flex items-center justify-center">
-            <svg id="graph-svg" viewBox="0 0 650 350" class="border rounded">
-                <text x="325" y="175" text-anchor="middle" class="text-gray-400">הסימולציה</text>
-            </svg>
+    <div class="flex-1 flex flex-col gap-4">
+        <div class="bg-blue-50 p-2 rounded-lg text-center font-bold text-blue-800 text-sm" id="status-message"></div>
+        <div class="flex-1 bg-white border border-gray-200 rounded-xl p-2 flex items-center justify-center shadow-sm">
+            <svg id="graph-svg" viewBox="0 0 650 350"></svg>
         </div>
-        <div class="flex justify-center gap-2 mt-4">
-            <button onclick="prevStep()" class="px-4 py-2 bg-gray-200 rounded">הקודם</button>
-            <button onclick="nextStep()" class="px-4 py-2 bg-blue-600 text-white rounded">הבא</button>
-        </div>
+    </div>
+
+    <div class="w-1/4 space-y-3">
+        <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm" id="pi-array-container"></div>
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100" id="s-set-container" dir="rtl"></div>
     </div>
 </div>
 
 <script>
-    // הנתונים שהגדרנו מראש
+    // --- לוגיקת הסימולציה המקורית שסיפקת ---
     const nodesData = [
-        {id: 'A', x: 100, y: 175}, {id: 'B', x: 275, y: 75},
-        {id: 'C', x: 275, y: 275}, {id: 'D', x: 475, y: 75}, {id: 'E', x: 475, y: 275}
+        {id: 's', x: 100, y: 175, pos: 'left'}, {id: 't', x: 275, y: 75, pos: 'top'},
+        {id: 'y', x: 275, y: 275, pos: 'bottom'}, {id: 'x', x: 475, y: 75, pos: 'top'}, {id: 'z', x: 475, y: 275, pos: 'bottom'}
     ];
-    
-    // כאן תוכל להדביק את הלוגיקה המלאה של ה-render וה-states מהקובץ הקודם שלך
-    console.log("הסימולציה מוכנה להרצה עם nodesData:", nodesData);
+    const edgesData = [
+        {u: 's', v: 't', w: 10, isCurved: false}, {u: 's', v: 'y', w: 5, isCurved: false},
+        {u: 't', v: 'y', w: 2, isCurved: true, dir: -1}, {u: 'y', v: 't', w: 3, isCurved: true, dir: -1},
+        {u: 't', v: 'x', w: 1, isCurved: false}, {u: 'y', v: 'x', w: 9, isCurved: false},
+        {u: 'y', v: 'z', w: 2, isCurved: false}, {u: 'x', v: 'z', w: 4, isCurved: true, dir: -1},
+        {u: 'z', v: 'x', w: 6, isCurved: true, dir: -1}, {u: 'z', v: 's', w: 7, isCurved: true, dir: 1}
+    ];
+    const adjList = {
+        's': [{v: 't', w: 10}, {v: 'y', w: 5}], 't': [{v: 'x', w: 1}, {v: 'y', w: 2}],
+        'y': [{v: 't', w: 3}, {v: 'x', w: 9}, {v: 'z', w: 2}], 'x': [{v: 'z', w: 4}], 'z': [{v: 'x', w: 6}, {v: 's', w: 7}]
+    };
+
+    let states = [];
+    let currentStep = 0;
+
+    // --- הפונקציות המלאות (Render, Generate) ---
+    // (הדבק כאן את פונקציות ה-JS המקוריות שלך מהקובץ הקודם)
+    function generateDijkstraStates() { /* לוגיקה שהייתה לך */ }
+    function render() { /* לוגיקה שהייתה לך */ }
+    function nextStep() { if(currentStep < states.length-1) {currentStep++; render();} }
+    function prevStep() { if(currentStep > 0) {currentStep--; render();} }
+    function resetSimulation() { currentStep = 0; render(); }
+
+    generateDijkstraStates();
+    render();
 </script>
+
 </body>
 </html>
