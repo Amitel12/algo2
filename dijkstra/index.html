@@ -2,95 +2,341 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Dijkstra's Algorithm Simulation</title>
+    <title>סימולציית דייקסטרה</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; background-color: #f3f4f6; font-family: sans-serif; overflow: hidden; }
-        .highlight-line { background-color: #374151; border-right: 4px solid #10b981; padding: 2px 0; }
-        svg { background: white; border-radius: 8px; }
-        .queue-item { transition: all 0.2s ease-in-out; }
+        .code-line { padding: 2px 4px; border-radius: 4px; transition: background-color 0.2s; }
+        .highlight-line { background-color: #374151; color: white; border-right: 4px solid #10b981; }
+        svg { background: white; border-radius: 8px; width: 100%; height: 100%; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
-<div class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center z-10 shrink-0">
-    <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה (CLRS)</h1>
-    <div class="flex items-center gap-2">
-        <button onclick="prevStep()" id="btn-prev" class="px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200">← הקודם</button>
-        <span id="step-counter" class="text-sm font-bold w-20 text-center">צעד 0/0</span>
-        <button onclick="nextStep()" id="btn-next" class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">הבא →</button>
-        <button onclick="resetSimulation()" class="p-2 border rounded-lg hover:bg-gray-50">🔄</button>
+<div class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center z-10 shrink-0 shadow-sm">
+    <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה (לפי התמונה)</h1>
+    <div class="flex items-center gap-3">
+        <button onclick="prevStep()" id="btn-prev" class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium text-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed">← הקודם</button>
+        <span id="step-counter" class="text-sm font-bold w-24 text-center bg-gray-50 py-2 rounded-lg border border-gray-200">צעד 0/0</span>
+        <button onclick="nextStep()" id="btn-next" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">הבא →</button>
+        <button onclick="resetSimulation()" title="התחל מחדש" class="p-2 border border-gray-300 rounded-lg hover:bg-gray-100 text-gray-600 transition">🔄</button>
     </div>
 </div>
 
 <div class="flex flex-1 overflow-hidden p-4 gap-4">
     
-    <div class="w-1/4 overflow-y-auto space-y-4">
+    <div class="w-1/4 flex flex-col gap-4 overflow-y-auto">
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-            <h2 class="font-bold text-blue-800 mb-2">חוקים וסיבוכיות</h2>
-            <p class="text-[11px] text-gray-600">מותר לשימוש רק בגרפים עם משקלים אי-שליליים (w ≥ 0).</p>
-            <h3 class="font-bold text-[12px] mt-3">סיבוכיות זמן:</h3>
-            <ul class="text-[11px] list-disc pr-4 text-gray-700">
-                <li><strong>גרף דליל (Min-Heap):</strong> O(E log V)</li>
-                <li><strong>גרף צפוף (מערך):</strong> O(V²)</li>
+            <h2 class="font-bold text-blue-800 mb-2 border-b pb-2">חוקים וסיבוכיות</h2>
+            <p class="text-xs text-gray-600 mb-2">מותר לשימוש רק בגרפים עם משקלים אי-שליליים (w ≥ 0).</p>
+            <h3 class="font-bold text-xs mt-3 text-gray-800">סיבוכיות זמן:</h3>
+            <ul class="text-xs list-disc pr-4 text-gray-700 space-y-1">
+                <li><strong>עם Min-Heap:</strong> O(E log V)</li>
+                <li><strong>עם מערך פשוט:</strong> O(V²)</li>
             </ul>
-            <div class="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-[10px] mt-3">
-                <p>while (Q is not empty) {</p>
-                <p>&nbsp;u = ExtractMin(Q);</p>
-                <p>&nbsp;for each v in adj[u] {</p>
-                <p class="highlight-line text-white">&nbsp;&nbsp;// Relaxation (הקלה):</p>
-                <p class="highlight-line text-white">&nbsp;&nbsp;if (d[v] > d[u] + w(u,v)) {</p>
-                <p>&nbsp;&nbsp;&nbsp;d[v] = d[u] + w(u,v);</p>
-                <p>&nbsp;&nbsp;&nbsp;pi[v] = u;</p>
-                <p class="highlight-line text-white">&nbsp;&nbsp;}</p>
-                <p>&nbsp;}</p>
-                <p>}</p>
-            </div>
+        </div>
+        
+        <div class="bg-gray-900 text-green-400 p-4 rounded-xl font-mono text-xs shadow-inner flex-1" dir="ltr">
+            <div id="code-0" class="code-line">1. d[A]=0, שאר ה-d=∞</div>
+            <div id="code-1" class="code-line">2. while (Q is not empty) {</div>
+            <div id="code-2" class="code-line">3. &nbsp;&nbsp;u = ExtractMin(Q);</div>
+            <div id="code-3" class="code-line">4. &nbsp;&nbsp;for each v in adj[u] {</div>
+            <div id="code-4" class="code-line text-gray-400">5. &nbsp;&nbsp;&nbsp;&nbsp;// Relaxation:</div>
+            <div id="code-5" class="code-line">6. &nbsp;&nbsp;&nbsp;&nbsp;if (d[v] > d[u] + w(u,v)) {</div>
+            <div id="code-6" class="code-line">7. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d[v] = d[u] + w(u,v);</div>
+            <div id="code-7" class="code-line">8. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pi[v] = u;</div>
+            <div id="code-8" class="code-line">9. &nbsp;&nbsp;&nbsp;&nbsp;}</div>
+            <div id="code-9" class="code-line">10. &nbsp;}</div>
+            <div id="code-10" class="code-line">11.}</div>
         </div>
     </div>
 
     <div class="flex-1 flex flex-col gap-4">
-        <div class="bg-blue-50 p-2 rounded-lg text-center font-bold text-blue-800 text-sm" id="status-message"></div>
-        <div class="flex-1 bg-white border border-gray-200 rounded-xl p-2 flex items-center justify-center shadow-sm">
-            <svg id="graph-svg" viewBox="0 0 650 350"></svg>
+        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 text-center font-bold text-blue-900 text-sm shadow-sm min-h-[48px] flex items-center justify-center" id="status-message"></div>
+        <div class="flex-1 bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-center shadow-sm relative">
+            <svg id="graph-svg" viewBox="0 0 500 300"></svg>
         </div>
     </div>
 
-    <div class="w-1/4 space-y-3">
-        <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm" id="pi-array-container"></div>
-        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100" id="s-set-container" dir="rtl"></div>
+    <div class="w-1/4 flex flex-col gap-4">
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex-1">
+            <h3 class="font-bold text-gray-800 text-sm mb-3 border-b pb-2">מערך מרחקים (d)</h3>
+            <div id="distances-container" class="space-y-2 text-sm"></div>
+        </div>
+        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-sm flex-1">
+            <h3 class="font-bold text-emerald-800 text-sm mb-3 border-b border-emerald-200 pb-2">קבוצת צמתים שטופלו (S)</h3>
+            <div id="s-set-container" class="text-sm text-emerald-900 font-mono bg-white p-2 rounded border border-emerald-100 min-h-[40px] flex items-center"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    // --- לוגיקת הסימולציה המקורית שסיפקת ---
+    // הגדרת הגרף לפי התמונה
     const nodesData = [
-        {id: 's', x: 100, y: 175, pos: 'left'}, {id: 't', x: 275, y: 75, pos: 'top'},
-        {id: 'y', x: 275, y: 275, pos: 'bottom'}, {id: 'x', x: 475, y: 75, pos: 'top'}, {id: 'z', x: 475, y: 275, pos: 'bottom'}
+        {id: 'A', x: 80, y: 150},
+        {id: 'B', x: 230, y: 50},
+        {id: 'C', x: 230, y: 250},
+        {id: 'D', x: 420, y: 50},
+        {id: 'E', x: 420, y: 250}
     ];
+
     const edgesData = [
-        {u: 's', v: 't', w: 10, isCurved: false}, {u: 's', v: 'y', w: 5, isCurved: false},
-        {u: 't', v: 'y', w: 2, isCurved: true, dir: -1}, {u: 'y', v: 't', w: 3, isCurved: true, dir: -1},
-        {u: 't', v: 'x', w: 1, isCurved: false}, {u: 'y', v: 'x', w: 9, isCurved: false},
-        {u: 'y', v: 'z', w: 2, isCurved: false}, {u: 'x', v: 'z', w: 4, isCurved: true, dir: -1},
-        {u: 'z', v: 'x', w: 6, isCurved: true, dir: -1}, {u: 'z', v: 's', w: 7, isCurved: true, dir: 1}
+        {u: 'A', v: 'B', w: 3}, {u: 'A', v: 'C', w: 1},
+        {u: 'B', v: 'C', w: 1}, {u: 'B', v: 'D', w: 3}, {u: 'B', v: 'E', w: 1},
+        {u: 'C', v: 'E', w: 4}, {u: 'D', v: 'E', w: 2}
     ];
+
+    // רשימת שכנויות דו-כיוונית לגרף לא מכוון
     const adjList = {
-        's': [{v: 't', w: 10}, {v: 'y', w: 5}], 't': [{v: 'x', w: 1}, {v: 'y', w: 2}],
-        'y': [{v: 't', w: 3}, {v: 'x', w: 9}, {v: 'z', w: 2}], 'x': [{v: 'z', w: 4}], 'z': [{v: 'x', w: 6}, {v: 's', w: 7}]
+        'A': [{v: 'B', w: 3}, {v: 'C', w: 1}],
+        'B': [{v: 'A', w: 3}, {v: 'C', w: 1}, {v: 'D', w: 3}, {v: 'E', w: 1}],
+        'C': [{v: 'A', w: 1}, {v: 'B', w: 1}, {v: 'E', w: 4}],
+        'D': [{v: 'B', w: 3}, {v: 'E', w: 2}],
+        'E': [{v: 'C', w: 4}, {v: 'B', w: 1}, {v: 'D', w: 2}]
     };
 
     let states = [];
     let currentStep = 0;
 
-    // --- הפונקציות המלאות (Render, Generate) ---
-    // (הדבק כאן את פונקציות ה-JS המקוריות שלך מהקובץ הקודם)
-    function generateDijkstraStates() { /* לוגיקה שהייתה לך */ }
-    function render() { /* לוגיקה שהייתה לך */ }
-    function nextStep() { if(currentStep < states.length-1) {currentStep++; render();} }
-    function prevStep() { if(currentStep > 0) {currentStep--; render();} }
-    function resetSimulation() { currentStep = 0; render(); }
+    // פונקציית עזר להעתקת מצב
+    function copyState(state) {
+        return {
+            d: {...state.d},
+            pi: {...state.pi},
+            S: new Set(state.S),
+            Q: [...state.Q],
+            u: state.u,
+            v: state.v,
+            activeLine: state.activeLine,
+            msg: state.msg
+        };
+    }
 
+    // בניית כל שלבי הסימולציה מראש
+    function generateDijkstraStates() {
+        let d = {'A':0, 'B':Infinity, 'C':Infinity, 'D':Infinity, 'E':Infinity};
+        let pi = {'A':null, 'B':null, 'C':null, 'D':null, 'E':null};
+        let S = new Set();
+        let Q = ['A', 'B', 'C', 'D', 'E'];
+
+        states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 0, msg: "אתחול: המרחק למקור (A) מוגדר כ-0, ולכל השאר אינסוף."}));
+
+        while(Q.length > 0) {
+            states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 1, msg: "בודק האם תור העדיפויות ריק."}));
+            
+            // מיון התור לפי מרחק (הדמיה של Min-Heap)
+            Q.sort((a, b) => d[a] - d[b]);
+            let u = Q.shift();
+            S.add(u);
+
+            states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 2, msg: `שולף את הצומת '${u}' בעל המרחק המינימלי (${d[u] === Infinity ? '∞' : d[u]}) מתור העדיפויות ומצרף אותו ל-S.`}));
+
+            for(let edge of adjList[u]) {
+                let v = edge.v;
+                let w = edge.w;
+
+                states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 3, msg: `בוחן את הצלע השכנה מ-'${u}' ל-'${v}' שמשקלה ${w}.`}));
+
+                if (d[v] > d[u] + w) {
+                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 5, msg: `בודק: האם ${d[v] === Infinity ? '∞' : d[v]} גדול מ-${d[u]} + ${w}? כן!`}));
+                    
+                    d[v] = d[u] + w;
+                    pi[v] = u;
+                    
+                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 6, msg: `מבצע הקלה (Relaxation): עדכון המרחק של '${v}' ל-${d[v]} ושמירת '${u}' כאבא.`}));
+                } else {
+                    states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 5, msg: `בודק: האם ${d[v] === Infinity ? '∞' : d[v]} גדול מ-${d[u]} + ${w}? לא. אין עדכון.`}));
+                }
+            }
+        }
+        
+        states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 10, msg: "התור ריק. האלגוריתם סיים את ריצתו! מצאנו את כל המסלולים הקצרים ביותר מ-A."}));
+    }
+
+    // פונקציית הרינדור (ציור הגרף ועדכון ממשק)
+    function render() {
+        const state = states[currentStep];
+        const svg = document.getElementById('graph-svg');
+        svg.innerHTML = '';
+
+        // ציור הצלעות
+        edgesData.forEach(edge => {
+            const uNode = nodesData.find(n => n.id === edge.u);
+            const vNode = nodesData.find(n => n.id === edge.v);
+            
+            // בדיקה אם הצלע הנוכחית היא זו שנבדקת כעת
+            const isActiveEdge = (state.u === edge.u && state.v === edge.v) || (state.u === edge.v && state.v === edge.u);
+            
+            // בדיקה אם הצלע היא חלק ממסלול קצר (לפי מערך pi)
+            const isPathEdge = state.pi[edge.v] === edge.u || state.pi[edge.u] === edge.v;
+
+            let strokeColor = '#d1d5db'; // אפור ברירת מחדל
+            let strokeWidth = 2;
+            
+            if (isActiveEdge) {
+                strokeColor = '#f59e0b'; // כתום לצלע הנבדקת
+                strokeWidth = 4;
+            } else if (isPathEdge) {
+                strokeColor = '#3b82f6'; // כחול למסלול קצר שכבר נקבע
+                strokeWidth = 3;
+            }
+
+            // קו הצלע
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', uNode.x);
+            line.setAttribute('y1', uNode.y);
+            line.setAttribute('x2', vNode.x);
+            line.setAttribute('y2', vNode.y);
+            line.setAttribute('stroke', strokeColor);
+            line.setAttribute('stroke-width', strokeWidth);
+            svg.appendChild(line);
+
+            // טקסט למשקל הצלע
+            const midX = (uNode.x + vNode.x) / 2;
+            const midY = (uNode.y + vNode.y) / 2;
+            
+            // רקע לבן קטן למשקל כדי שיהיה קריא
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', midX - 8);
+            rect.setAttribute('y', midY - 10);
+            rect.setAttribute('width', 16);
+            rect.setAttribute('height', 16);
+            rect.setAttribute('fill', 'white');
+            rect.setAttribute('rx', 3);
+            svg.appendChild(rect);
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', midX);
+            text.setAttribute('y', midY + 3);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('font-size', '12');
+            text.setAttribute('font-weight', 'bold');
+            text.setAttribute('fill', '#4b5563');
+            text.textContent = edge.w;
+            svg.appendChild(text);
+        });
+
+        // ציור הצמתים
+        nodesData.forEach(node => {
+            const isU = state.u === node.id;
+            const isV = state.v === node.id;
+            const inS = state.S.has(node.id);
+
+            let fillColor = '#ffffff';
+            let strokeColor = '#6b7280'; // אפור
+            let textColor = '#374151';
+
+            if (isU) {
+                fillColor = '#3b82f6'; // כחול לצומת הנוכחי (u)
+                strokeColor = '#1d4ed8';
+                textColor = 'white';
+            } else if (isV) {
+                fillColor = '#fcd34d'; // צהוב לצומת השכן הנבדק (v)
+                strokeColor = '#d97706';
+            } else if (inS) {
+                fillColor = '#10b981'; // ירוק לצמתים שסיימנו איתם
+                strokeColor = '#047857';
+                textColor = 'white';
+            }
+
+            // עיגול הצומת
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', node.x);
+            circle.setAttribute('cy', node.y);
+            circle.setAttribute('r', 18);
+            circle.setAttribute('fill', fillColor);
+            circle.setAttribute('stroke', strokeColor);
+            circle.setAttribute('stroke-width', '2');
+            svg.appendChild(circle);
+
+            // טקסט שם הצומת
+            const textId = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textId.setAttribute('x', node.x);
+            textId.setAttribute('y', node.y + 5);
+            textId.setAttribute('text-anchor', 'middle');
+            textId.setAttribute('font-size', '14');
+            textId.setAttribute('font-weight', 'bold');
+            textId.setAttribute('fill', textColor);
+            textId.textContent = node.id;
+            svg.appendChild(textId);
+
+            // טקסט המרחק (d) מעל או ליד הצומת
+            const dist = state.d[node.id];
+            const distTextVal = dist === Infinity ? '∞' : dist;
+            const distText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            
+            // מיקום המרחק קצת שונה לכל צומת למניעת התנגשויות
+            let dX = node.x;
+            let dY = node.y - 25;
+            if (node.id === 'A') { dX -= 25; dY += 5; }
+            if (node.id === 'D' || node.id === 'B') dY -= 5;
+            if (node.id === 'C' || node.id === 'E') dY = node.y + 35;
+
+            distText.setAttribute('x', dX);
+            distText.setAttribute('y', dY);
+            distText.setAttribute('text-anchor', 'middle');
+            distText.setAttribute('font-size', '14');
+            distText.setAttribute('font-weight', 'bold');
+            distText.setAttribute('fill', '#2563eb'); // כחול בולט למרחק
+            distText.textContent = distTextVal;
+            svg.appendChild(distText);
+        });
+
+        // עדכון טקסטים וכפתורים בממשק
+        document.getElementById('status-message').textContent = state.msg;
+        document.getElementById('step-counter').textContent = `צעד ${currentStep} / ${states.length - 1}`;
+        document.getElementById('btn-prev').disabled = currentStep === 0;
+        document.getElementById('btn-next').disabled = currentStep === states.length - 1;
+
+        // עדכון תצוגת מרחקים
+        let distancesHtml = '';
+        Object.keys(state.d).forEach(node => {
+            const dVal = state.d[node] === Infinity ? '∞' : state.d[node];
+            const piVal = state.pi[node] ? state.pi[node] : '-';
+            const isActive = node === state.u || node === state.v;
+            const bgClass = isActive ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-100';
+            
+            distancesHtml += `
+                <div class="flex justify-between items-center p-2 rounded border ${bgClass}">
+                    <span class="font-bold w-6 text-center">${node}</span>
+                    <span class="text-gray-600">d: <span class="font-bold text-blue-600">${dVal}</span></span>
+                    <span class="text-gray-500 text-xs">אבא: ${piVal}</span>
+                </div>
+            `;
+        });
+        document.getElementById('distances-container').innerHTML = distancesHtml;
+
+        // עדכון תצוגת קבוצת S
+        const sArray = Array.from(state.S);
+        document.getElementById('s-set-container').innerHTML = sArray.length > 0 ? `{ ${sArray.join(', ')} }` : '{ }';
+
+        // הדגשת שורת קוד
+        document.querySelectorAll('.code-line').forEach(el => el.classList.remove('highlight-line'));
+        const activeLineEl = document.getElementById(`code-${state.activeLine}`);
+        if(activeLineEl) activeLineEl.classList.add('highlight-line');
+    }
+
+    // פעולות ניווט
+    function nextStep() {
+        if(currentStep < states.length - 1) {
+            currentStep++;
+            render();
+        }
+    }
+
+    function prevStep() {
+        if(currentStep > 0) {
+            currentStep--;
+            render();
+        }
+    }
+
+    function resetSimulation() {
+        currentStep = 0;
+        render();
+    }
+
+    // הפעלה ראשונית
     generateDijkstraStates();
     render();
 </script>
