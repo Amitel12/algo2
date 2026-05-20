@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>סימולציית דייקסטרה</title>
+    <title>סימולציית דייקסטרה ב-C</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; background-color: #f3f4f6; font-family: sans-serif; overflow: hidden; }
@@ -20,7 +20,7 @@
                 <path d="M11.47 3.84a.75.75 0 011.06 0l8.99 9a.75.75 0 11-1.06 1.06l-1.03-1.03V20.25a1.5 1.5 0 01-1.5 1.5h-4.5v-5.625a1.125 1.125 0 00-1.125-1.125h-1.5a1.125 1.125 0 00-1.125 1.125V21.75h-4.5a1.5 1.5 0 01-1.5-1.5V12.87L2.53 13.9a.75.75 0 11-1.06-1.06l8.99-9z"/>
             </svg>
         </a>
-        <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה</h1>
+        <h1 class="text-xl font-bold text-gray-800">סימולציית דייקסטרה (קוד C)</h1>
     </div>
     
     <div class="flex items-center gap-2">
@@ -46,31 +46,32 @@
         
         <div class="bg-gray-900 p-4 rounded-xl shadow-inner flex-1 flex flex-col gap-1 overflow-y-auto" dir="ltr">
             <div id="code-0" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs">d[A]=0, all other d=∞</span>
+                <span class="text-gray-100 font-mono text-xs">d[src] = 0; // all other d[i] = INT_MAX</span>
                 <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// אתחול מרחקים</span>
             </div>
             <div id="code-1" class="code-line flex justify-between items-center rounded px-2 py-1 mt-2">
-                <span class="text-gray-100 font-mono text-xs">while (Q is not empty) {</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// כל עוד יש צמתים שלא טופלו</span>
+                <span class="text-gray-100 font-mono text-xs">while (!isEmpty(Q)) {</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// כל עוד התור לא ריק</span>
             </div>
             <div id="code-2" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-4">u = ExtractMin(Q);</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שליפת צומת עם המרחק המינימלי</span>
+                <span class="text-gray-100 font-mono text-xs pl-4">int u = extractMin(Q, d);</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// שליפת צומת עם מרחק מינימלי</span>
             </div>
             <div id="code-3" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-4">for each v in adj[u] {</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// מעבר על שכני הקדקוד</span>
+                <span class="text-gray-100 font-mono text-xs pl-4">for (Edge* e = adj[u]; e != NULL; e = e->next) {</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// מעבר על הרשימה המקושרת</span>
             </div>
             <div id="code-4" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-400 font-mono text-xs pl-8">// Relaxation:</span>
+                <span class="text-gray-400 font-mono text-xs pl-8">int v = e->dest, w = e->weight;</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// חילוץ נתוני השכן</span>
             </div>
             <div id="code-5" class="code-line flex justify-between items-center rounded px-2 py-1">
-                <span class="text-gray-100 font-mono text-xs pl-8">if (d[v] > d[u] + w(u,v)) {</span>
-                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// בדיקת שיפור מרחק</span>
+                <span class="text-gray-100 font-mono text-xs pl-8">if (d[u] != INT_MAX && d[v] > d[u] + w) {</span>
+                <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// הגנה מ-Overflow ובדיקת שיפור</span>
             </div>
             <div id="code-6" class="code-line flex flex-col justify-center rounded px-2 py-1">
                 <div class="flex justify-between items-center w-full">
-                    <span class="text-gray-100 font-mono text-xs pl-12">d[v] = d[u] + w(u,v);</span>
+                    <span class="text-gray-100 font-mono text-xs pl-12">d[v] = d[u] + w;</span>
                     <span class="text-green-400 font-sans text-[11px] text-right whitespace-nowrap ml-4" dir="rtl">// עדכון מרחק</span>
                 </div>
                 <div class="flex justify-between items-center w-full mt-1">
@@ -127,7 +128,6 @@
 </div>
 
 <script>
-    // הגדרת הגרף לפי התמונה
     const nodesData = [
         {id: 'A', x: 80, y: 150},
         {id: 'B', x: 230, y: 50},
@@ -142,7 +142,6 @@
         {u: 'C', v: 'E', w: 4}, {u: 'D', v: 'E', w: 2}
     ];
 
-    // רשימת שכנויות דו-כיוונית לגרף לא מכוון
     const adjList = {
         'A': [{v: 'B', w: 3}, {v: 'C', w: 1}],
         'B': [{v: 'A', w: 3}, {v: 'C', w: 1}, {v: 'D', w: 3}, {v: 'E', w: 1}],
@@ -154,7 +153,6 @@
     let states = [];
     let currentStep = 0;
 
-    // פונקציית עזר להעתקת מצב
     function copyState(state) {
         return {
             d: {...state.d},
@@ -168,33 +166,32 @@
         };
     }
 
-    // בניית כל שלבי הסימולציה מראש
     function generateDijkstraStates() {
         let d = {'A':0, 'B':Infinity, 'C':Infinity, 'D':Infinity, 'E':Infinity};
         let pi = {'A':null, 'B':null, 'C':null, 'D':null, 'E':null};
         let S = new Set();
         let Q = ['A', 'B', 'C', 'D', 'E'];
 
-        states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 0, msg: "אתחול: המרחק למקור (A) מוגדר כ-0, ולכל השאר אינסוף."}));
+        states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 0, msg: "אתחול: המרחק למקור (A) מוגדר כ-0, ולכל השאר אינסוף (INT_MAX)."}));
 
         while(Q.length > 0) {
             states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 1, msg: "בודק האם תור העדיפויות ריק."}));
             
-            // מיון התור לפי מרחק (הדמיה של Min-Heap)
             Q.sort((a, b) => d[a] - d[b]);
             let u = Q.shift();
             S.add(u);
 
             states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 2, msg: `שולף את הצומת '${u}' בעל המרחק המינימלי (${d[u] === Infinity ? '∞' : d[u]}) מתור העדיפויות ומצרף אותו ל-S.`}));
 
+            states.push(copyState({d, pi, S, Q, u: u, v: null, activeLine: 3, msg: `מתחיל לעבור על הרשימה המקושרת של השכנים של הקדקוד '${u}'.`}));
+
             for(let edge of adjList[u]) {
                 let v = edge.v;
                 let w = edge.w;
 
-                // צמתים שכבר טופלו ונמצאים ב-S לא עוברים הקלה שוב
                 if(S.has(v)) continue;
 
-                states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 3, msg: `בוחן את הצלע השכנה מ-'${u}' ל-'${v}' שמשקלה ${w}.`}));
+                states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 4, msg: `מחלץ מתוך המצביע e את השכן v='${v}' ואת המשקל w=${w}.`}));
 
                 if (d[v] > d[u] + w) {
                     states.push(copyState({d, pi, S, Q, u: u, v: v, activeLine: 5, msg: `בודק: האם ${d[v] === Infinity ? '∞' : d[v]} גדול מ-${d[u]} + ${w}? כן!`}));
@@ -212,35 +209,29 @@
         states.push(copyState({d, pi, S, Q, u: null, v: null, activeLine: 10, msg: "התור ריק. האלגוריתם סיים את ריצתו! מצאנו את כל המסלולים הקצרים ביותר מ-A."}));
     }
 
-    // פונקציית הרינדור (ציור הגרף ועדכון ממשק)
     function render() {
         const state = states[currentStep];
         const svg = document.getElementById('graph-svg');
         svg.innerHTML = '';
 
-        // ציור הצלעות
         edgesData.forEach(edge => {
             const uNode = nodesData.find(n => n.id === edge.u);
             const vNode = nodesData.find(n => n.id === edge.v);
             
-            // בדיקה אם הצלע הנוכחית היא זו שנבדקת כעת
             const isActiveEdge = (state.u === edge.u && state.v === edge.v) || (state.u === edge.v && state.v === edge.u);
-            
-            // בדיקה אם הצלע היא חלק ממסלול קצר (לפי מערך pi)
             const isPathEdge = state.pi[edge.v] === edge.u || state.pi[edge.u] === edge.v;
 
-            let strokeColor = '#d1d5db'; // אפור ברירת מחדל
+            let strokeColor = '#d1d5db';
             let strokeWidth = 2;
             
             if (isActiveEdge) {
-                strokeColor = '#f59e0b'; // כתום לצלע הנבדקת
+                strokeColor = '#f59e0b';
                 strokeWidth = 4;
             } else if (isPathEdge) {
-                strokeColor = '#3b82f6'; // כחול למסלול קצר שכבר נקבע
+                strokeColor = '#3b82f6';
                 strokeWidth = 3;
             }
 
-            // קו הצלע
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             line.setAttribute('x1', uNode.x);
             line.setAttribute('y1', uNode.y);
@@ -250,14 +241,13 @@
             line.setAttribute('stroke-width', strokeWidth);
             svg.appendChild(line);
 
-            // טקסט למשקל הצלע - הורחב כדי להכיל את ה-w=
             const midX = (uNode.x + vNode.x) / 2;
             const midY = (uNode.y + vNode.y) / 2;
             
             const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            rect.setAttribute('x', midX - 22);
+            rect.setAttribute('x', midX - 8);
             rect.setAttribute('y', midY - 10);
-            rect.setAttribute('width', 44);
+            rect.setAttribute('width', 16);
             rect.setAttribute('height', 16);
             rect.setAttribute('fill', 'white');
             rect.setAttribute('rx', 3);
@@ -272,34 +262,32 @@
             text.setAttribute('fill', '#4b5563');
             text.setAttribute('dir', 'ltr');
             text.setAttribute('style', 'direction: ltr; unicode-bidi: embed;');
-            text.textContent = 'w=' + edge.w; // נוסף w= כאן בבירור
+            text.textContent = edge.w;
             svg.appendChild(text);
         });
 
-        // ציור הצמתים
         nodesData.forEach(node => {
             const isU = state.u === node.id;
             const isV = state.v === node.id;
             const inS = state.S.has(node.id);
 
             let fillColor = '#ffffff';
-            let strokeColor = '#6b7280'; // אפור
+            let strokeColor = '#6b7280';
             let textColor = '#374151';
 
             if (isU) {
-                fillColor = '#3b82f6'; // כחול לצומת הנוכחי (u)
+                fillColor = '#3b82f6';
                 strokeColor = '#1d4ed8';
                 textColor = 'white';
             } else if (isV) {
-                fillColor = '#fcd34d'; // צהוב לצומת השכן הנבדק (v)
+                fillColor = '#fcd34d';
                 strokeColor = '#d97706';
             } else if (inS) {
-                fillColor = '#10b981'; // ירוק לצמתים שסיימנו איתם
+                fillColor = '#10b981';
                 strokeColor = '#047857';
                 textColor = 'white';
             }
 
-            // עיגול הצומת
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', node.x);
             circle.setAttribute('cy', node.y);
@@ -309,7 +297,6 @@
             circle.setAttribute('stroke-width', '2');
             svg.appendChild(circle);
 
-            // טקסט שם הצומת
             const textId = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             textId.setAttribute('x', node.x);
             textId.setAttribute('y', node.y + 5);
@@ -320,7 +307,6 @@
             textId.textContent = node.id;
             svg.appendChild(textId);
 
-            // טקסט המרחק (d) מעל או ליד הצומת
             const dist = state.d[node.id];
             const distTextVal = dist === Infinity ? '∞' : dist;
             const distText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -343,13 +329,11 @@
             svg.appendChild(distText);
         });
 
-        // עדכון טקסטים וכפתורים בממשק
         document.getElementById('status-message').textContent = state.msg;
         document.getElementById('step-counter').textContent = `צעד ${currentStep} / ${states.length - 1}`;
         document.getElementById('btn-prev').disabled = currentStep === 0;
         document.getElementById('btn-next').disabled = currentStep === states.length - 1;
 
-        // עדכון תצוגת מרחקים
         let distancesHtml = '';
         Object.keys(state.d).forEach(node => {
             const dVal = state.d[node] === Infinity ? '∞' : state.d[node];
@@ -367,11 +351,9 @@
         });
         document.getElementById('distances-container').innerHTML = distancesHtml;
 
-        // עדכון תצוגת קבוצת S
         const sArray = Array.from(state.S);
         document.getElementById('s-set-container').innerHTML = sArray.length > 0 ? `{ ${sArray.join(', ')} }` : '{ }';
 
-        // עדכון תצוגת הצלעות שנוצרו בעץ ה-Shortest Paths
         let treeEdges = [];
         Object.keys(state.pi).forEach(node => {
             if (state.pi[node]) {
@@ -380,7 +362,6 @@
         });
         document.getElementById('edges-tree-container').innerHTML = treeEdges.length > 0 ? `{ ${treeEdges.join(', ')} }` : '{ }';
 
-        // הדגשת שורת קוד
         document.querySelectorAll('.code-line').forEach(el => el.classList.remove('highlight-line'));
         const activeLineEl = document.getElementById(`code-${state.activeLine}`);
         if(activeLineEl) {
@@ -389,7 +370,6 @@
         }
     }
 
-    // פעולות ניווט
     function nextStep() { if(currentStep < states.length - 1) { currentStep++; render(); } }
     function prevStep() { if(currentStep > 0) { currentStep--; render(); } }
     function resetSimulation() { currentStep = 0; render(); }
