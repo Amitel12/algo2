@@ -39,8 +39,8 @@
     <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-12">
         
         <div class="text-center md:text-right mb-10">
-            <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight">אלגוריתמי גרפים ונתונים</h2>
-            <p class="text-gray-500 mt-2 text-base max-w-xl">בחר אלגוריתם כדי לפתוח סימולציה אינטראקטיבית הכוללת הרצה צעד-אחר-צעד, מעקב קוד ומטריצות/מבני נתונים בזמן אמת.</p>
+            <h2 class="text-3xl font-extrabold text-gray-950 tracking-tight">ארכיון האלגוריתמים</h2>
+            <p class="text-gray-500 mt-2 text-base max-w-xl">בחר אלגוריתם או מבנה נתונים כדי לפתוח סימולציה אינטראקטיבית הכוללת הרצה צעד-אחר-צעד ומעקב ויזואלי בזמן אמת.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -53,9 +53,9 @@
                     <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-100">O(|V|·|E|)</span>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 mt-4 group-hover:text-purple-700 transition-colors">אלגוריתם בלמן-פורד (Bellman-Ford)</h3>
-                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">Single-Source Shortest Path</p>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">גרפים • Single-Source</p>
                 <p class="text-gray-600 text-sm mt-3 leading-relaxed">מציאת מסלולים קצרים ביותר מכל צומת מקור נתון, עם תמיכה במשקלים שליליים בגרף וזיהוי מעגלים שליליים.</p>
-                <div class="mt-4 flex items-center text-sm font-bold text-purple-600 group-hover:translate-x-[-4px] transition-transform">פתח סימולציה &larr;</div>
+                <div class="mt-4 flex items-center text-sm font-bold text-purple-600 group-hover:translate-x-[-4px] transition-transform font-medium">פתח סימולציה &larr;</div>
             </a>
 
             <a href="floyd-warshall.html" class="algo-card block bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-emerald-300 group">
@@ -66,19 +66,45 @@
                     <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">O(|V|³)</span>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 mt-4 group-hover:text-emerald-700 transition-colors">אלגוריתם פלויד-וורשאל (Floyd-Warshall)</h3>
-                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">All-Pairs Shortest Path</p>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">גרפים • All-Pairs</p>
                 <p class="text-gray-600 text-sm mt-3 leading-relaxed">חישוב המסלולים הקצרים ביותר בין כל זוגות הצמתים בגרף במקביל באמצעות תכנון דינמי ומטריצות מעבר.</p>
-                <div class="mt-4 flex items-center text-sm font-bold text-emerald-600 group-hover:translate-x-[-4px] transition-transform">פתח סימולציה &larr;</div>
+                <div class="mt-4 flex items-center text-sm font-bold text-emerald-600 group-hover:translate-x-[-4px] transition-transform font-medium">פתח סימולציה &larr;</div>
+            </a>
+
+            <a href="bst.html" class="algo-card block bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 group">
+                <div class="flex justify-between items-start">
+                    <div class="bg-blue-50 text-blue-600 p-3 rounded-xl group-hover:bg-blue-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><line x1="9" y1="7" x2="6.5" y2="16"/><line x1="15" y1="7" x2="17.5" y2="16"/></svg>
+                    </div>
+                    <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">O(h)</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mt-4 group-hover:text-blue-700 transition-colors">עץ חיפוש בינארי (BST)</h3>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">מבני נתונים • עצים</p>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">סימולציה של פעולות הכנסה, מחיקה וחיפוש בעץ בינארי, תוך שמירה על תכונת הסדר והצגת תהליך הסריקה הרקורסיבי.</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-blue-600 group-hover:translate-x-[-4px] transition-transform font-medium">פתח סימולציה &larr;</div>
+            </a>
+
+            <a href="avl.html" class="algo-card block bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-amber-300 group">
+                <div class="flex justify-between items-start">
+                    <div class="bg-amber-50 text-amber-600 p-3 rounded-xl group-hover:bg-amber-100 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="19" cy="5" r="3"/><circle cx="5" cy="19" r="3"/></svg>
+                    </div>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100">O(log n)</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mt-4 group-hover:text-amber-700 transition-colors">עץ מאוזן AVL (AVL Tree)</h3>
+                <p class="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">מבני נתונים • איזון עצים</p>
+                <p class="text-gray-600 text-sm mt-3 leading-relaxed">ויזואליזציה אינטראקטיבית של גורמי איזון (BF) וביצוע רוטציות (LL, RR, LR, RL) בזמן אמת לאחר פעולות הכנסה ומחיקה.</p>
+                <div class="mt-4 flex items-center text-sm font-bold text-amber-600 group-hover:translate-x-[-4px] transition-transform font-medium">פתח סימולציה &larr;</div>
             </a>
 
         </div>
 
         <div class="mt-12 bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-4 text-center md:text-right">
             <div class="bg-blue-100 text-blue-700 p-2.5 rounded-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4 gaze"/><path d="M12 8h.01"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
             </div>
             <div class="text-sm text-blue-800 font-medium">
-                <strong>טיפ לסטודנטים:</strong> שני האלגוריתמים משתמשים בעקרון התכנון הדינמי, אך פלויד-וורשאל פותר את הבעיה לכל הזוגות בגרף בבת אחת בעוד שבלמן-פורד מתמקד בצומת מקור בודד.
+                <strong>טיפ לסטודנטים:</strong> הבנת מבני נתונים ועצים (כמו AVL ו-BST) חיונית להבנת הדרך בה אלגוריתמים מורכבים יותר מנהלים זיכרון ומבצעים אופטימיזציות לשליפת נתונים.
             </div>
         </div>
 
