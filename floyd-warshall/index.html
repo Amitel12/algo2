@@ -42,7 +42,7 @@
                 <li>יכול להתמודד עם <strong>קשתות שליליות</strong>, אך רק כאשר אין מעגלים שליליים.</li>
                 <li>זיהוי מעגל שלילי: לאחר סיום, אם מתקבל <strong>ערך שלילי באלכסון</strong> הראשי ב-D.</li>
                 <li>מבוסס על <strong>תכנון דינמי</strong> (Dynamic Programming).</li>
-                <li>השורה $k$ והעמודה $k$ במטריצה משמשות כבסיס לחישובים ולא משתנות באיטרציה $k$.</li>
+                <li>השורה <b>k</b> והעמודה <b>k</b> במטריצה משמשות כבסיס לחישובים ולא משתנות באיטרציה <b>k</b>.</li>
             </ul>
             <h3 class="font-bold text-xs mt-3 text-emerald-800">סיבוכיות זמן: <span class="text-gray-700 font-normal">O(|V|³)</span></h3>
         </div>
@@ -91,9 +91,9 @@
             
             <div class="absolute top-4 right-4 bg-white/90 p-2 rounded border border-gray-200 text-xs shadow-sm z-10 text-right">
                 <div class="font-bold mb-1 border-b pb-1">מקרא צבעים:</div>
-                <div class="flex items-center gap-2 mb-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span> צומת מתווך ($k$)</div>
-                <div class="flex items-center gap-2 mb-1"><span class="w-3 h-3 rounded-full bg-green-500"></span> צומת מקור ($i$)</div>
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> צומת יעד ($j$)</div>
+                <div class="flex items-center gap-2 mb-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span> צומת מתווך (k)</div>
+                <div class="flex items-center gap-2 mb-1"><span class="w-3 h-3 rounded-full bg-green-500"></span> צומת מקור (i)</div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500"></span> צומת יעד (j)</div>
             </div>
 
             <svg id="graph-svg" viewBox="0 0 500 400">
@@ -197,7 +197,7 @@
                 if (i === k || D[i][k] === INF) continue; // אופטימיזציה לדילוג על תאים חסרי טעם לתצוגה
 
                 for (let j = 0; j < N; j++) {
-                    if (j === k || j === i || D[k][j] === INF) continue;
+                    if (j === k || D[k][j] === INF) continue; // הסרנו את j === i כדי לאפשר זיהוי מעגל שלילי
 
                     let old_d = D[i][j];
                     let d_ik = D[i][k];
@@ -238,7 +238,7 @@
             D: copyMatrix(D), Pi: copyMatrix(Pi), 
             k: null, activeI: null, activeJ: null, 
             activeLine: 10, iteration: N,
-            msg: "האלגוריתם הסתיים! מטריצת D מכילה כעת את המרחקים הקצרים ביותר בין כל זוג צמתים. אין ערכים שליליים באלכסון, אז אין מעגל שלילי."
+            msg: "האלגוריתם הסתיים! מטריצת D מכילה כעת את המרחקים הקצרים ביותר בין כל זוג צמתים. במידה ויש ערך שלילי באלכסון - קיים מעגל שלילי בגרף."
         });
     }
 
