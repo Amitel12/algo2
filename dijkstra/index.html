@@ -118,6 +118,7 @@
                 <div class="font-bold text-blue-900 mb-1 border-b border-blue-200 pb-1">מקרא סימנים:</div>
                 <ul class="space-y-1 mt-1">
                     <li><strong class="text-blue-600 font-mono text-sm">d</strong> - המרחק המינימלי מצומת המקור.</li>
+                    <li><strong class="text-amber-600 font-mono text-sm">Q</strong> - תור העדיפויות.</li>
                     <li><strong class="text-gray-600 font-mono text-sm">π</strong> - אב (Pi): הצומת הקודם במסלול.</li>
                     <li><strong class="text-emerald-600 font-mono text-sm">S</strong> - קבוצת הצמתים שטופלו סופית.</li>
                     <li><strong class="text-gray-500 font-mono text-sm">w</strong> - משקל הצלע.</li>
@@ -126,6 +127,15 @@
 
             <h3 class="font-bold text-gray-800 text-sm mb-3 border-b pb-2">מערך מרחקים (d)</h3>
             <div id="distances-container" class="space-y-2 text-sm"></div>
+        </div>
+
+        <!-- פאנל תור העדיפויות החדש -->
+        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-sm flex-none">
+            <h3 class="font-bold text-amber-800 text-sm mb-3 border-b border-amber-200 pb-2 flex justify-between">
+                <span>תור עדיפויות (Q)</span>
+                <span class="text-xs font-normal text-amber-700 opacity-80">(צומת, מרחק)</span>
+            </h3>
+            <div id="q-set-container" class="flex flex-wrap gap-2 text-sm min-h-[40px] items-center" dir="ltr"></div>
         </div>
         
         <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-sm flex-none">
@@ -141,7 +151,6 @@
 </div>
 
 <script>
-    // ... (הסקריפט נשאר ללא שינוי, רק עדכנתי את הממשק) ...
     const nodesData = [
         {id: 'A', x: 80, y: 150},
         {id: 'B', x: 230, y: 50},
@@ -381,6 +390,24 @@
             `;
         });
         document.getElementById('distances-container').innerHTML = distancesHtml;
+
+        // רינדור תור העדיפויות (Q)
+        let qHtml = '';
+        if (state.Q.length === 0) {
+            qHtml = '<span class="text-amber-700/50 italic text-sm w-full text-center">התור ריק</span>';
+        } else {
+            // מיון לתצוגה כדי להמחיש את המבנה של Min-Heap / Priority Queue
+            let qElements = [...state.Q].sort((a, b) => state.d[a] - state.d[b]);
+            qElements.forEach(node => {
+                let dist = state.d[node] === Infinity ? '∞' : state.d[node];
+                qHtml += `
+                    <div class="bg-white border border-amber-300 rounded-md px-2 py-1 text-amber-900 font-mono shadow-sm flex items-center gap-1 text-xs">
+                        <strong class="text-sm">${node}</strong><span class="text-amber-600 opacity-80">(${dist})</span>
+                    </div>
+                `;
+            });
+        }
+        document.getElementById('q-set-container').innerHTML = qHtml;
 
         const sArray = Array.from(state.S);
         document.getElementById('s-set-container').innerHTML = sArray.length > 0 ? `{ ${sArray.join(', ')} }` : '{ }';
